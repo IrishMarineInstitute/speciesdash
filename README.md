@@ -1,2 +1,2 @@
 # speciesdash
-Species Dashabord
+Species Dashboard
