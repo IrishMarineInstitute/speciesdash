@@ -13,8 +13,6 @@ channel <- odbcDriverConnect("Driver=SQL Server;
 SDdata<- sqlQuery(channel,Q)
 
 
-
-#saveRDS(SDdata, file = "FullData.rds")
 ###################################################
 
 ####Some of the species in table SpeciesResultSetExpanded changed since last updates data in 2019#####
@@ -35,23 +33,14 @@ com_sp<-filter(sp,CommonName%in%c("Angler","Atlantic Cod","Atlantic Herring",
 "Green Pollack","Haddock","Megrim","Whiting"))
 com_sp[c(3,22,24,28)]
 
-
-
-
 sp<-SDdata
 
 ####### Formatting #######
-#SDdata<-readRDS("Data/FullData.rds")
+
 levels(as.factor(SDdata$Species))
 SDdata$Species <- trimws(SDdata$Species)
 head(SDdata) #check white space removed
 
-# SDdata<-SDdata[SDdata$Species %in% c("Atlantic Herring","Atlantic Mackerel", "Blackbellied Angler",
-#                                      "Blue Whiting","Boarfish",
-#                                      "Cod Atlantic","Haddock","Hake European",
-#                                      "Horse Mackerel Atlantic","Lemon Sole","Ling","Megrim","Monkfish Angler",
-#                                      "Monkfish Angler nei","Plaice","Pollack",
-#                                      "Saithe","Sole Black","Sprat European","Whiting"),]
 
 SDdata<-SDdata[SDdata$Species %in% c("Atlantic Herring","Atlantic Mackerel","Blackbellied Angler",
                                      "Blue Whiting","Boarfish",
@@ -60,25 +49,8 @@ SDdata<-SDdata[SDdata$Species %in% c("Atlantic Herring","Atlantic Mackerel","Bla
                                      "European Plaice","Green Pollack",
                                      "Billet","Common Sole","European Sprat","Whiting"),]
 
-
-levels(as.factor(SDdata$Species))
 SDdata$Species <- droplevels(as.factor(SDdata$Species)) #drop empty levels of species
 
-# SDdata <-  SDdata %>%
-#   mutate(Species = 
-#            recode(Species,
-#                   'Atlantic Herring' = "Herring",
-#                   'Cod Atlantic' = "Cod",
-#                   'Blackbellied Angler' = "Black-bellied Anglerfish",
-#                   'Monkfish Angler nei' = "Monkfish",
-#                   'Monkfish Angler' = "White-bellied Anglerfish",
-#                   'Atlantic Mackerel' = "Mackerel",
-#                   "Hake European" = "Hake",
-#                   'Lemon Sole' = "Sole",
-#                   'Sole Black' = "Sole",
-#                   'Sprat European' = "Sprat",
-#                   'Horse Mackerel Atlantic' = "Horse Mackerel"
-#            ))
 
 ####### Complete Cases #######
 ### Length ###
@@ -88,12 +60,12 @@ dataV3 <- dataV2[!is.na(dataV2$Weight),]
 dim(dataV3)
 cc.length <- dataV3
 cc.length <- cc.length[cc.length$Weight>0,]
-#saveRDS(cc.length, file= "Data/CompleteLengthCases20200319.rds") ##change to todays date before running
+
+saveRDS(cc.length, file= "Data/CompleteLengthCases20200319.rds") ##change to todays date before running
 
 bio.data<- cc.length
 bio.data.sample <- sample_frac(bio.data, 0.1)
-
-bio.data<-filter(bio.data,Year!=2020)
+bio.data<-filter(bio.data,Year!=2020) #remove unverified data from present year
 bio.data<-droplevels(filter(bio.data,ICESSubArea!="U    "))
 bio.data$ICESSubArea<-paste0("27.",bio.data$ICESSubArea)
 bio.data$ICESSubArea<-trimws(bio.data$ICESSubArea)
@@ -102,17 +74,15 @@ bio.data$ICESSubArea<-as.factor(bio.data$ICESSubArea)
 bio.data$ICESDiv<-as.factor(bio.data$ICESDiv)
 levels(bio.data$ICESDiv)[10]<-"(unclassified)" #renaming "U"
 bio.data$ICESDivFullNameN<-droplevels(interaction(bio.data$ICESSubArea,bio.data$ICESDiv))
-
 bio.data$ICESSubArea<-as.factor(bio.data$ICESSubArea)
 bio.data$ICESDivFullNameN<-as.factor(bio.data$ICESDivFullNameN)
 
-saveRDS(bio.data, file = "Data/bio.data20200319.rds")
+saveRDS(bio.data, file = "Data/bio.data20200319.rds") ##change to todays date before running
 
 ### Age ###
 bio.data.age <- SDdata
 dataA2 <- bio.data.age[!is.na(bio.data.age$Age),]
 dataA3 <- dataA2[!is.na(dataA2$Length),]
-dim(dataA3)
 cc.age<-dataA3
 cc.age <- cc.age[!is.na(cc.age$Date),]
 cc.age<- cc.age %>%
@@ -136,8 +106,6 @@ cc.age$ICESSubArea<-as.factor(cc.age$ICESSubArea)
 cc.age$ICESDivFullNameN<-as.factor(cc.age$ICESDivFullNameN)
 
 saveRDS(cc.age, file = "Data/cc.age20200319.rds")
-
-
 
 
 #########SpeciesList for server.R####
