@@ -1,3 +1,9 @@
+#############################################     IMPORTANT    ##############################################
+####  Once run, this script produces the current years' Landings maps for the species dashboard app      ####
+####  after the maps are produces they must be copied from the "LandingsDistribution" folder and pasted  ####
+####  into a new folder named "LandingsXXXX" (where XXXX = current year) at the following location;      ####
+####  Github- speciesdash/www/LandingsDist/LandingsXXX                                                   ####
+
 
 rm(list=ls())
 library(mapplots)
