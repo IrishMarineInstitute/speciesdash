@@ -7,15 +7,9 @@
 #
 # Load in the data
 
-
-
 SpeciesList<-read.csv("Data/SpeciesList.csv")
-
-
 bio.data <- readRDS("Data/bio.data20200319.rds")
 cc.age<- readRDS("Data/cc.age20200319.rds")
-
-
 Supp_table <- read.csv('Data/Supplemental data.csv', header=TRUE, sep = ",")
 
 Mode <- function(x) {
@@ -65,14 +59,6 @@ shinyServer(function(input, output, session){
         }
     })
     
-    
-    # showModal(modalDialog(
-    #     title = "Please note",
-    #     "This app is best viewed using Google Chrome",
-    #     footer = modalButton("OK"),
-    #     easyClose = TRUE
-    # ))
-    
     ###### Introduction page #######
     output$intromap1 <- renderLeaflet({
         leaflet() %>% 
@@ -113,9 +99,6 @@ shinyServer(function(input, output, session){
     output$tabpic6b<-renderImage({
       filename <- normalizePath(file.path('www',paste("Sampled",'.png', sep='')))
       list(src = filename, width =500, height= 550)}, deleteFile = FALSE)
-    # output$tabpic6c<-renderImage({
-    #   filename <- normalizePath(file.path('www',paste("RV2",'.jpeg', sep='')))
-    #   list(src = filename, width =450, height= 250)}, deleteFile = FALSE)
     output$intro_tabset1<- renderText({
         as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"biology"])})
     output$intro_tabset2a<- renderText({
@@ -201,14 +184,10 @@ shinyServer(function(input, output, session){
         if(input$species=="Horse Mackerel")
         {if(input$slideryear>2014){paste(Supp_table[which(Supp_table[,"Fish"] %in% input$species),"LandingsDist"], sep="")}
             else{}}
-        else{#if(input$slideryear==2018){
-            #paste("The distribution of ", input$species, " landings by Irish vessels between 2014 and ", 
-             # input$slideryear, ". ",  Supp_table[which(Supp_table[,"Fish"] %in% input$species),"LandingsDist"], sep="")}
-            #else{
+        else{
                 paste("The distribution of ", input$species, " landings by Irish vessels during ", 
               input$slideryear, ". ", 
               Supp_table[which(Supp_table[,"Fish"] %in% input$species),"LandingsDist"], sep="")}
-            #}
     })
     
 ######## Length/Weight #######
@@ -236,28 +215,6 @@ grsp <-reactive({
         gearlist2 = factor(append("All", as.character(gearlist)))
         selectInput(inputId="gearselect", label="Select gear type", choices=gearlist2, selected= "All")
     })
-    
-    #Filtering grsp() (full) data based on filters above
-    # grspnew.w<- reactive({
-    #     if(is.null(input$year[1]) || is.null(input$year[2])){
-    #         grspyear=grsp()
-    #     }else if(input$year[1]==min(grsp()$Year, na.rm=TRUE)&&input$year[2]==max(grsp()$Year, na.rm=TRUE)){
-    #         grspyear=grsp()
-    #     }else{
-    #         grspyear<- filter(grsp(), Year %in% input$year[1]:input$year[2])
-    #     }
-    #     if(input$quarter == "All" || is.null(input$quarter)){
-    #         grspqtr = grspyear
-    #     }else{
-    #         grspqtr<- filter(grspyear, Quarter %in% input$quarter )
-    #     }
-    #     if(input$gearselect == "All"|| is.null(input$gearselect)|| input$biooptionselection=="None"){
-    #         grspgear = grspqtr  #grspmonth
-    #     }else{
-    #         grspgear <- filter(grspqtr, Gear %in% input$gearselect) #grspmonth
-    #     }
-    # })
-    
     grspnew.w<- reactive({
         
         grspyear<- filter(grsp(), Year %in% input$year)
@@ -268,16 +225,15 @@ grsp <-reactive({
             grspqtr<- filter(grspyear, Quarter %in% input$quarter )
         }
         if(input$gearselect == "All"|| is.null(input$gearselect)|| input$biooptionselection=="None"){
-            grspgear = grspqtr  #grspmonth
+            grspgear = grspqtr 
         }else{
-            grspgear <- filter(grspqtr, Gear %in% input$gearselect) #grspmonth
+            grspgear <- filter(grspqtr, Gear %in% input$gearselect) 
         }
     })
   
    
     #Creating Sub Area filter based on the full data
     output$spatialops.w <- renderUI({
-  #unqsub =  mixedsort(as.character(unique(grsp()$ICESSubArea)),numeric.type="roman")
    if(input$Id=="ICES Area"){   
        pickerInput(
            inputId = "subselect",
@@ -301,10 +257,8 @@ grsp <-reactive({
         multiple = TRUE
       )}
 })
-    
-    
-  
-    #Update the Area filter based on the full data being filtered by year, quarter, #month and gear
+
+    #Update the Area filter based on the full data being filtered by year, quarter and gear
       observe({
         if(input$Id=="ICES Area"){     
           if(is.null(input$year)){
@@ -326,9 +280,7 @@ grsp <-reactive({
           }
         }
       })
-  
-    
-    
+
     #Filter based on Sub Area
     grspnew.w1<- reactive({
       if(input$Id=="ICES Area"){
@@ -345,12 +297,9 @@ grsp <-reactive({
             paste(input$species, "-LWdata",".csv", sep = "")
         },
         content = function(file) {
-            #write.csv(grspnew.w1(), file, row.names = FALSE) 
             write.csv(grsp(), file, row.names = FALSE) 
         })
-    
-    
-    
+
     ###Plotly charts
     output$bio_lw<- renderPlotly({
         if(input$biooptionselection=="Sex"){
@@ -359,7 +308,6 @@ grsp <-reactive({
                          text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date),
                          hoverinfo='text',
                          color = ~Sex, colors="Set1",
-                             #c('M'='#6699ff','O'='#cccccc','U'='#999999','F'='#ff66cc','I'='#ccff99'),
                          mode = 'markers', marker =list(opacity = 0.5)) %>% 
                 layout(hovermode=TRUE, title=paste(input$species,"Length vs Weight (points coloured by sex)"),
                        xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length), max(grspnew.w1()$Length)+1)),
@@ -438,12 +386,11 @@ grsp <-reactive({
         list(src = filename, width =300)}, deleteFile = FALSE)
     
 cc.a<-reactive({filter(cc.age,Species==as.character(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]]))})  
+
 # Reactive year filter based on years available by species
 output$yearfilter.a<- renderUI({
     sliderInput("year.a","Years", min=min(cc.a()$Year, na.rm=TRUE), max=max(cc.a()$Year, na.rm=TRUE), 
-                # value =c(min(cc.a()$Year, na.rm=TRUE),max(cc.a()$Year, na.rm=TRUE)), sep="", step=1)
                 value =max(cc.a()$Year, na.rm=TRUE), sep="", step=1)
-    #
 })
 
 # Reactive quarter filter based on quarters available by species
@@ -470,20 +417,14 @@ grspage <- reactive({
         grspageqtr<- filter(grspageyear, Quarter %in% input$quarter.a )
     }
     if(input$gearselect.a == "All"|| is.null(input$gearselect.a)|| input$ageoptionselection=="None"){
-        grspagegear = grspageqtr #grspagemonth
+        grspagegear = grspageqtr 
     }else{
-        grspagegear <- filter(grspageqtr, Gear %in% input$gearselect.a)  #grspagemonth
+        grspagegear <- filter(grspageqtr, Gear %in% input$gearselect.a) 
     }
 })
 
 #Creating Sub Area filter based on the full data
  output$spatialops.a <- renderUI({
-#     unqsub.a = factor(append("All", as.character(unique(cc.a()$ICESDivFullName))))
-#      checkboxGroupInput(inputId = "subselect.a",label= "ICES Area", choices = as.list(unqsub.a),
-#                         selected= "All", inline = TRUE)
-#     
- 
-
 if(input$Id.a=="ICES Area"){   
   pickerInput(
     inputId = "subselect.a",
@@ -510,14 +451,6 @@ else{
 
 #Update the Area filter based on the full data being filtered by year, quarter, month and gear
 observe({
-     # if(is.null(input$year.a)){#} |is.na(input$year.a)  ){
-     #    return()
-     # }else{# ....
-     #     x <-factor(append("All", as.character(unique(grspage()$ICESDivFullName))))
-     #     updateCheckboxGroupInput(session, "subselect.a",label="ICES Areas", choices=x,
-     #                              selected= "All", inline = TRUE)
-     #    
-     # }
   if(input$Id.a=="ICES Area"){     
     if(is.null(input$year.a)){
          return()
@@ -564,7 +497,6 @@ output$bio_la<- renderPlotly({
                      type = 'scatter', mode = 'markers',hoverinfo='text',
                      text=~paste("length:",Length,"cm","<br>age:",AgeContin, "<br>date:", Date), 
                      color = ~Sex, colors = "Set1",
-                     #colors=c('U'='#999999','M'='#6699ff','O'='#cccccc','F'='#ff66cc','I'='#ccff99'),
                      mode = 'markers') %>% 
             layout(hovermode=TRUE, title=paste(input$species,"age at length (points coloured by sex)"),
                    xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$AgeContin)+1)),

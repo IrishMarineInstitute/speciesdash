@@ -121,13 +121,6 @@ shinyUI(
                             column(width = 7,
                                    fluidRow(
                                        column(width=3,
-                                              # selectInput("species",label="Species",
-                                              #             choices= list("Cod","Boarfish","Haddock","Herring",
-                                              #                           "Hake","Horse Mackerel","Ling","Mackerel",
-                                              #                           "Megrim","White-bellied Anglerfish",
-                                              #                           "Black-bellied Anglerfish","Plaice", "Sole","Sprat",
-                                              #                           "Blue Whiting","Whiting","Saithe","Pollack"),
-                                              #             selected= "Cod" ),
                                               # We set the species list and default selection in server.R now 
                                               selectInput("species",label="Species",
                                                           choices= NULL,
@@ -173,9 +166,7 @@ shinyUI(
                                               ), #- SubArea filter
                                               
                                               conditionalPanel("input.fishtab == 'A'",
-                                                               downloadButton("downloadDatalw", "Download data")#,
-                                                              # br(),
-                                                              # downloadLink("downloadDatalw_full", "Download full dataset")
+                                                               downloadButton("downloadDatalw", "Download data")
                                               ),
                                               conditionalPanel("input.fishtab == 'B'",
                                                                radioGroupButtons(
@@ -193,8 +184,7 @@ shinyUI(
                                                                uiOutput("spatialops.a")), #- SubArea filter
                                               conditionalPanel("input.fishtab == 'B'",                 
                                                                downloadButton("downloadDatala", "Download data",class="btn btn-outline-primary")#,
-                                                               #br(),
-                                                              #downloadLink("downloadDatala_full", "Download full dataset")
+                                                               
                                                                ))
                                    ),
                                    ##### Fish sp tab - Maps and plots  ######                                     
