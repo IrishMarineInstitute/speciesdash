@@ -7,9 +7,12 @@
 #
 # Load in the data
 
-SpeciesList<-read.csv("Data/SpeciesList.csv")
-bio.data <- readRDS("Data/bio.data20200319.rds")
-cc.age<- readRDS("Data/cc.age20200319.rds")
+#SpeciesList<-read.csv("Data/SpeciesList.csv")
+SpeciesList<-read.csv("Data/SpeciesList20211202.csv")
+#bio.data <- readRDS("Data/bio.data20200319.rds")
+bio.data <- readRDS("Data/bio.data20211202.rds")
+#cc.age<- readRDS("Data/cc.age20200319.rds")
+cc.age<- readRDS("Data/cc.age20211202.rds")
 Supp_table <- read.csv('Data/Supplemental data.csv', header=TRUE, sep = ",")
 
 Mode <- function(x) {
@@ -205,7 +208,9 @@ grsp <-reactive({
        
         sliderInput("year","Years", min=min(grsp()$Year, na.rm=TRUE), max=max(grsp()$Year, na.rm=TRUE), 
                     # value =c(min(grsp()$Year, na.rm=TRUE),max(grsp()$Year, na.rm=TRUE)) ,sep="", step=1)##all years
-                    value =max(grsp()$Year, na.rm=TRUE) ,sep="", step=1)##by one year
+                    #value =max(grsp()$Year, na.rm=TRUE) 
+                    value = c(min(grsp()$Year, na.rm=TRUE), max(grsp()$Year, na.rm=TRUE) )
+                    ,sep="", step=1)##by one year
         
     })
     
@@ -390,7 +395,9 @@ cc.a<-reactive({filter(cc.age,Species==as.character(SpeciesList[which(SpeciesLis
 # Reactive year filter based on years available by species
 output$yearfilter.a<- renderUI({
     sliderInput("year.a","Years", min=min(cc.a()$Year, na.rm=TRUE), max=max(cc.a()$Year, na.rm=TRUE), 
-                value =max(cc.a()$Year, na.rm=TRUE), sep="", step=1)
+                #value =max(cc.a()$Year, na.rm=TRUE)
+                value = c(min(cc.a()$Year, na.rm=TRUE), max(cc.a()$Year, na.rm=TRUE) ),
+                sep="", step=1)
 })
 
 # Reactive quarter filter based on quarters available by species
