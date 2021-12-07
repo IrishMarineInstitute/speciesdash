@@ -206,7 +206,7 @@ shinyUI(
                                                                tags$style(HTML(".js-irs-1 .irs-grid-pol.small {height: 0px;}")),
                                                                sliderInput("slideryear", "Choose Year:",
                                                                            min = 2007, max = 2019, #change after yearly update..For year 2020 max year is 2019
-                                                                           value = 2019, step = 1,
+                                                                           value = 2020, step = 1,
                                                                            sep = "",
                                                                            animate = TRUE),htmlOutput("LandingsDisttext")),offset=4,style = "margin-top:-5em"))
                             ), 
