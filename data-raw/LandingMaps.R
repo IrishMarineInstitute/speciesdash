@@ -2,15 +2,27 @@
 ####  Once run, this script produces the current years' Landings maps for the species dashboard app      ####
 ####  after the maps are produces they must be copied from the "LandingsDistribution" folder and pasted  ####
 ####  into a new folder named "LandingsXXXX" (where XXXX = current year) at the following location;      ####
-####  Github- speciesdash/www/LandingsDist/LandingsXXX                                                   ####
+####  www/LandingsDist/LandingsXXX                                                   ####
 
 
 rm(list=ls())
 library(mapplots)
 library(mapdata)
 library(rgdal)
-load('L:/StockBooks/_StockBook2020/maps/VMS/Landings2019/LandingsEffort2019.Rdata')
-eezWorld <- readOGR("L:/StockBooks/Stock Books Historic/StockBook 2018/Maps/VMS/PropSpecies","eez_boundaries") # marineregions v9
+library(RODBC)
+
+## TODO - change to latest logbooks snapshot and update VMSlogbooks.sql
+## to use the correct year
+## only need to extract the data once (takes a while):
+# channel <- odbcDriverConnect("Driver=SQL Server; Server=XXX; Database=XXX")
+#   sqlQuery(channel,readChar("data-raw/VmsLogbooks.sql",10^6))
+#   vms <- sqlQuery(channel,readChar("data-raw/RegularGrid.sql",10^6))
+# close(channel)
+# save(vms,file='data-raw/LandingsDistribution/LandingsEffort2020.Rdata')
+
+load('data-raw/LandingsDistribution/LandingsEffort2020.Rdata')
+
+eezWorld <- readOGR("data-raw","eez_boundaries") # marineregions v9
 eezWorld1 <- subset(eezWorld,Line_type%in%c('Treaty','200 NM','Connection line','Median line','Unilateral claim (undisputed)'))
 rm(eezWorld)
 
