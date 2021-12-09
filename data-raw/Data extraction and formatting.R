@@ -71,7 +71,7 @@ dim(dataV3)
 cc.length <- dataV3
 cc.length <- cc.length[cc.length$Weight>0,]
 
-saveRDS(cc.length, file= "Data/CompleteLengthCases20211202.rds") ##change to todays date before running
+#saveRDS(cc.length, file= "Data/CompleteLengthCases20211202.rds") ##change to todays date before running
 
 bio.data<- cc.length
 bio.data.sample <- sample_frac(bio.data, 0.1)
