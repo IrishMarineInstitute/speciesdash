@@ -209,7 +209,8 @@ grsp <-reactive({
         sliderInput("year","Years", min=min(grsp()$Year, na.rm=TRUE), max=max(grsp()$Year, na.rm=TRUE), 
                     # value =c(min(grsp()$Year, na.rm=TRUE),max(grsp()$Year, na.rm=TRUE)) ,sep="", step=1)##all years
                     #value =max(grsp()$Year, na.rm=TRUE) 
-                    value = c(min(grsp()$Year, na.rm=TRUE), max(grsp()$Year, na.rm=TRUE) )
+                    #value = c(min(grsp()$Year, na.rm=TRUE), max(grsp()$Year, na.rm=TRUE) )
+                    value = c( max(grsp()$Year, na.rm=TRUE) - 1, max(grsp()$Year, na.rm=TRUE) )
                     ,sep="", step=1)##by one year
         
     })
@@ -222,7 +223,22 @@ grsp <-reactive({
     })
     grspnew.w<- reactive({
         
-        grspyear<- filter(grsp(), Year %in% input$year)
+        #grspyear<- filter(grsp(), Year %in% input$year)
+        #print(input$year)
+        myYears <- c()
+        if (!is.null(input$year)){
+          if (length(input$year)>=2){
+            if (input$year[1] < input$year[2]){
+              myYears <- input$year[1]:input$year[2]
+            } else {
+              myYears <- c(input$year[1])
+            }
+          } else {
+            myYears <- input$year
+          }
+        }
+        #print(myYears)
+        grspyear<- filter(grsp(), Year %in% myYears)
         
         if(input$quarter == "All" || is.null(input$quarter)){
             grspqtr = grspyear
@@ -396,7 +412,8 @@ cc.a<-reactive({filter(cc.age,Species==as.character(SpeciesList[which(SpeciesLis
 output$yearfilter.a<- renderUI({
     sliderInput("year.a","Years", min=min(cc.a()$Year, na.rm=TRUE), max=max(cc.a()$Year, na.rm=TRUE), 
                 #value =max(cc.a()$Year, na.rm=TRUE)
-                value = c(min(cc.a()$Year, na.rm=TRUE), max(cc.a()$Year, na.rm=TRUE) ),
+                #value = c(min(cc.a()$Year, na.rm=TRUE), max(cc.a()$Year, na.rm=TRUE) ),
+                value = c( max(cc.a()$Year, na.rm=TRUE) - 1, max(cc.a()$Year, na.rm=TRUE) ),
                 sep="", step=1)
 })
 
