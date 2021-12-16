@@ -153,6 +153,12 @@ shinyServer(function(input, output, session){
     })
     
     
+    ## Clear the value of input$lengthcm when input$species is changed
+    observeEvent(input$species,{
+      #print("input$species event observed")
+      updateTextInput(session, "lengthcm", value = "")
+    }, ignoreNULL = TRUE, ignoreInit = TRUE)
+    
     ##### Age/length widget ######
     x1 <- reactive({cc.age$Age[which(cc.age$Species==paste(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]]) & 
                                          cc.age$Length== paste(input$lengthcm))]})
@@ -174,10 +180,16 @@ shinyServer(function(input, output, session){
         
         output$age_hist <- renderPlotly({
           yy<-as.data.frame(y1())
-          yy$age<-as.factor(yy$y1)
-          p<-ggplot(yy,aes(age))+geom_bar(color="black",fill="white",width = 1)+
-          labs(title ='Histogram of observered ages',x="Age" )
-          ggplotly(p)
+          
+          # Don't show the graph if there's no data
+          if (nrow(yy) == 0){
+            NULL
+          } else {
+            yy$age<-as.factor(yy$y1)
+            p<-ggplot(yy,aes(age))+geom_bar(color="black",fill="white",width = 1)+
+            labs(title ='Histogram of observered ages',x="Age" )
+            ggplotly(p)
+          }
          
         })
     })
