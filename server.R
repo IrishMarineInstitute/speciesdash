@@ -325,74 +325,86 @@ grsp <-reactive({
     output$bio_lw<- renderPlotly({
         if(input$biooptionselection=="Sex"){
             grspnew.w1 <- filter(grspnew.w1(), !is.na(Sex))
-            p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter', 
-                         text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date),
+            validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', 
+                         text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>sex:", Sex),
                          hoverinfo='text',
                          color = ~Sex, colors="Set1",
                          mode = 'markers', marker =list(opacity = 0.5)) %>% 
-                layout(hovermode=TRUE, title=paste(input$species,"Length vs Weight (points coloured by sex)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length), max(grspnew.w1()$Length)+1)),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05)),
+                layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by sex)"),
+                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length)-1, max(grspnew.w1()$Length)+1), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05), showline = TRUE),
                        margin=(list(t=70)),
                        showlegend = TRUE) 
             p$elementId <- NULL
             p 
         }else if(input$biooptionselection=="Age"){
             grspnew.w1 <- filter(grspnew.w1(), Age>-1)
-            p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
-                         text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>Age:", Age),
-                         color= ~Age, colors = "Set1",marker =list(opacity = 0.5)) %>%  
-                layout(hovermode=TRUE, title=paste(input$species,"Length vs Weight (points coloured by age)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length), max(grspnew.w1()$Length)+1)),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05)),
-                       margin=(list(t=70)),
-                       showlegend = FALSE)
+            grspnew.w1 <- filter(grspnew.w1, !is.na(Age))
+            validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+
+              p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
+                text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>Age:", Age),
+                color= ~Age, colors = "Set1",marker =list(opacity = 0.5)) %>%  
+              layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by age)"),
+                xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length)-1, max(grspnew.w1()$Length)+1), showline = TRUE),
+                yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05), showline = TRUE),
+                margin=(list(t=70)),
+                showlegend = FALSE)
             p$elementId <- NULL
             p 
         }else if(input$biooptionselection=="Presentation"){
             grspnew.w1 <- filter(grspnew.w1(), !is.na(Presentation))
-            p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
+            validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
                          text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>presentation:", Presentation),
                          color= ~Presentation, colors = "Dark2") %>%  
-                layout(hovermode=TRUE, title=paste(input$species,"Length vs Weight (points coloured by sample presentation)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length), max(grspnew.w1()$Length)+1)),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05)),
+                layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by sample presentation)"),
+                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length)-1, max(grspnew.w1()$Length)+1), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05), showline = TRUE),
                        margin=(list(t=70)),
                        showlegend = TRUE)
             p$elementId <- NULL
             p 
         }else if(input$biooptionselection=="Sample Type"){
             grspnew.w1 <- filter(grspnew.w1(), !is.na(Type))
-            p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
+            validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
                          text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>sample type:",Type), 
                          color= ~Type,colors =c('Discards'='red','Landings'='lightgreen')) %>%  
-                layout(hovermode=TRUE, title=paste(input$species,"Length vs Weight (points coloured by sample type)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length), max(grspnew.w1()$Length)+1)),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05)),
+                layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by sample type)"),
+                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length)-1, max(grspnew.w1()$Length)+1), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05), showline = TRUE),
                        margin=(list(t=70)),
                        showlegend = TRUE)
             p$elementId <- NULL
             p 
         }else if(input$biooptionselection=="Gear"){
             grspnew.w1 <- filter(grspnew.w1(), !is.na(Gear))
-            p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
+            validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
                          text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>gear type:",Gear),
                          color= ~Gear,colors = "Set1") %>%  
-                layout(hovermode=TRUE, title=paste(input$species,"Length vs Weight (points coloured by gear type)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length), max(grspnew.w1()$Length)+1)),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05)),
+                layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by gear type)"),
+                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length)-1, max(grspnew.w1()$Length)+1), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05), showline = TRUE),
                        margin=(list(t=70)),
                        showlegend = TRUE)
             p$elementId <- NULL
             p 
         }
         else{
-            p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter',color=~Weight, colors="Spectral",
-                         mode = 'markers', marker =list(opacity = 0.5), hoverinfo='text',
+          validate(need(nrow(grspnew.w1()) > 0, "No data to plot for the selected parameters"))
+            #p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter',color=~Weight, colors="Spectral",
+              #mode = 'markers', marker =list(opacity = 0.5),
+           p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter',
+                         mode = 'markers', marker =list(opacity = 0.5,color='black'),
+                         hoverinfo='text',
                          text=~paste("length:",Length,"cm<br>weight:",Weight, "grams<br>Date:", Date)) %>%
-                layout(hovermode=TRUE, title=paste(input$species," Length vs Weight", sep=""),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length), max(grspnew.w1()$Length)+1)),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05)),
+                        #text=~paste("Length:",Length,"cm<br>Weight:",Weight, "g")) %>%
+                layout(hovermode='closest', title=paste(input$species," Weight vs Length", sep=""),
+                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length)-1, max(grspnew.w1()$Length)+1), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05), showline = TRUE),
                        margin=(list(t=80)),
                        showlegend = FALSE)
             p$elementId <- NULL
@@ -517,65 +529,74 @@ output$downloadDatala <- downloadHandler(
 
 output$bio_la<- renderPlotly({
     if(input$ageoptionselection=="Sex"){
-        p <- plot_ly(grspnew.a1(), x = grspnew.a1()$AgeContin , y =grspnew.a1()$Length,
+      validate(need(nrow(grspnew.a1()) > 0, "No data to plot for the selected parameters"))
+        p <- plot_ly(grspnew.a1(), x = ~Age , y =~Length,
                      type = 'scatter', mode = 'markers',hoverinfo='text',
-                     text=~paste("length:",Length,"cm","<br>age:",AgeContin, "<br>date:", Date), 
+                     text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date, "<br>sex:", Sex), 
                      color = ~Sex, colors = "Set1",
                      mode = 'markers') %>% 
-            layout(hovermode=TRUE, title=paste(input$species,"age at length (points coloured by sex)"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$AgeContin)+1)),
-                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length), max(grspnew.a1()$Length)+1)),
+            layout(hovermode='closest', title=paste(input$species,"length at age (points coloured by sex)"),
+                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$Age)+1), showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length)-1, max(grspnew.a1()$Length)+1), showline = TRUE),
                    margin=(list(t=50)),
                    showlegend = TRUE) 
         p$elementId <- NULL
         p 
     }else if(input$ageoptionselection=="Presentation"){
         grspnew.a1 <- filter(grspnew.a1(), !is.na(Presentation))
-        p <- plot_ly(grspnew.a1(), x = grspnew.a1()$AgeContin, y = grspnew.a1()$Length, 
+        validate(need(nrow(grspnew.a1) > 0, "No data to plot for the selected parameters"))
+        p <- plot_ly(grspnew.a1, x = ~Age, y = ~Length, 
                      type = 'scatter', mode = 'markers',hoverinfo='text',
-                     text=~paste("length:",Length,"cm","<br>age:",AgeContin, "<br>date:", Date, "<br>presentation:", Presentation),
+                     text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date, "<br>presentation:", Presentation),
                      color= ~Presentation,colors = "Dark2") %>%  
-            layout(hovermode=TRUE, title=paste(input$species,"age at length (points coloured by presentation)"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$AgeContin)+1)),
-                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length), max(grspnew.a1()$Length)+1)),
+            layout(hovermode='closest', title=paste(input$species,"length at age (points coloured by presentation)"),
+                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$Age)+1), showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length)-1, max(grspnew.a1()$Length)+1), showline = TRUE),
                    margin=(list(t=50)),
                    showlegend = TRUE) 
         p$elementId <- NULL
         p 
     }else if(input$ageoptionselection=="Sample Type"){
         grspnew.a1 <- filter(grspnew.a1(), !is.na(Type))
-        p <- plot_ly(grspnew.a1(), x = grspnew.a1()$AgeContin, y = grspnew.a1()$Length,
+        validate(need(nrow(grspnew.a1) > 0, "No data to plot for the selected parameters"))
+        p <- plot_ly(grspnew.a1, x = ~Age, y = ~Length,
                      type = 'scatter', mode = 'markers',hoverinfo='text',
-                     text=~paste("length:",Length,"cm","<br>age:",AgeContin, "<br>date:", Date, "<br>sample type:",Type),
+                     text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date, "<br>sample type:",Type),
                      color= ~Type,colors =c('Discards'='red','Landings'='lightgreen')) %>%  
-            layout(hovermode=TRUE, title=paste(input$species,"age at length (points coloured by sample type)"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$AgeContin)+1)),
-                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length), max(grspnew.a1()$Length)+1)),
+            layout(hovermode='closest', title=paste(input$species,"length at age (points coloured by sample type)"),
+                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$Age)+1), showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length)-1, max(grspnew.a1()$Length)+1), showline = TRUE),
                    margin=(list(t=50)),
                    showlegend = TRUE) 
         p$elementId <- NULL
         p 
     }else if(input$ageoptionselection=="Gear"){
         grspnew.a1 <- filter(grspnew.a1(), !is.na(Gear))
-        p <- plot_ly(grspnew.a1(), x = grspnew.a1()$AgeContin, y = grspnew.a1()$Length,
+        validate(need(nrow(grspnew.a1) > 0, "No data to plot for the selected parameters"))
+        p <- plot_ly(grspnew.a1, x = ~Age, y = ~Length,
                      type = 'scatter', mode = 'markers',hoverinfo='text',
-                     text=~paste("length:",Length,"cm","<br>age:",AgeContin, "<br>date:", Date, "<br>gear type:",Gear),
+                     text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date, "<br>gear type:",Gear),
                      color= ~Gear,colors = "Set1") %>%  
-            layout(hovermode=TRUE, title=paste(input$species,"age at length (points coloured by gear type)"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$AgeContin)+1)),
-                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length), max(grspnew.a1()$Length)+1)),
+            layout(hovermode='closest', title=paste(input$species,"length at age (points coloured by gear type)"),
+                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$Age)+1), showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length)-1, max(grspnew.a1()$Length)+1), showline = TRUE),
                    margin=(list(t=50)),
                    showlegend = TRUE) 
         p$elementId <- NULL
         p 
     }else{
-        p <- plot_ly(grspnew.a1(), x = grspnew.a1()$AgeContin, y = grspnew.a1()$Length,
-                     color= ~Age, colors = 'Paired',hoverinfo='text',
-                     type = 'scatter', mode = 'markers', marker =list(opacity = 0.5),
-                     text=~paste("length:",Length,"cm","<br>age:",AgeContin))%>% 
-            layout(hovermode=TRUE, title=paste(input$species,"age at length"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$AgeContin)+1)),
-                   yaxis = list(title = 'Length (cm)', range= c(0, max(grspnew.a1()$Length)+1)),
+      validate(need(nrow(grspnew.a1()) > 0, "No data to plot for the selected parameters"))
+        #p <- plot_ly(grspnew.a1(), x = grspnew.a1()$AgeContin, y = grspnew.a1()$Length,
+                     #color= ~Age, colors = 'Paired',hoverinfo='text',
+                     #type = 'scatter', mode = 'markers', marker =list(opacity = 0.5),
+        p <- plot_ly(grspnew.a1(), x = ~Age, y = ~Length,
+                     hoverinfo='text',
+                     type = 'scatter', mode = 'markers', marker =list(opacity = 0.5,color = 'black'),
+                     text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date))%>% 
+                     #text=~paste("Age:",Age,"<br>Mean Length:",Length,"cm"))%>% 
+            layout(hovermode='closest', title=paste(input$species,"length at age"),
+                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$Age)+1) ,showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length)-1, max(grspnew.a1()$Length)+1), showline = TRUE),
                    margin=(list(t=50)),
                    showlegend = FALSE)
         p$elementId <- NULL
