@@ -63,11 +63,12 @@ shinyServer(function(input, output, session){
     })
     
     ###### Introduction page #######
-    output$intromap1 <- renderLeaflet({
-        leaflet() %>% 
-            addProviderTiles(providers$Esri.OceanBasemap) %>% 
-            setView(lng = -8.2124, lat = 53.2734, zoom = 6)
-    })
+    # djc 17/12/21 - output$intromap1 doesn't seem to do anything...
+    #output$intromap1 <- renderLeaflet({
+    #    leaflet() %>% 
+    #        addProviderTiles(providers$Esri.OceanBasemap) %>% 
+    #        setView(lng = -8.2124, lat = 53.2734, zoom = 6)
+    #})
     #output$fgmap1<-renderImage({ 
     #    filename <- normalizePath(file.path('www',paste("FishingGrounds",'.jpg', sep='')))
     #    list(src = filename, width = 500, height= 570)}, deleteFile = FALSE) 
@@ -87,9 +88,10 @@ shinyServer(function(input, output, session){
     #    filename <- normalizePath(file.path('www',paste("PortNames",'.png', sep='')))
     #    list(src = filename, width =350, height= 400, style="display: block; margin-left: auto; margin-right: auto;")},
     #    deleteFile = FALSE) 
-    output$tabmap3<-renderImage({
-        filename <- normalizePath(file.path('www',paste("GearTypes",'.png', sep='')))
-        list(src = filename, width =550, height= 650)}, deleteFile = FALSE)
+    # djc 17/12/21 - output$tabmap3 doesn't seem to do anything...
+    #output$tabmap3<-renderImage({
+    #    filename <- normalizePath(file.path('www',paste("GearTypes",'.png', sep='')))
+    #    list(src = filename, width =550, height= 650)}, deleteFile = FALSE)
     output$gear_pic<-renderImage({
         filename <- normalizePath(file.path('www/GearPics',paste(input$gearpic,'.jpg', sep='')))
         list(src = filename, width =400, height= "auto")}, deleteFile = FALSE)
@@ -207,7 +209,18 @@ shinyServer(function(input, output, session){
     
 ######## Length/Weight #######
 grsp <-reactive({
- filter(bio.data,Species==as.character(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]]))})
+  
+  #filter(bio.data,Species==as.character(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]]))})
+  
+  # set a default value to prevent error messages
+  speciesToFilter <- "xxx"
+  if (input$species != ""){
+    speciesToFilter <- as.character(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]])
+  }
+ 
+  filter(bio.data,Species==speciesToFilter)
+ 
+ })
   
     # Reactive quarter filter based on quarters available by species
     output$quarterfilter<- renderUI({
@@ -426,11 +439,29 @@ grsp <-reactive({
     })   
     
 ######## Age/Weight ########
-    output$speciesotolith<-renderImage({
+output$speciesotolith<-renderImage({
+  # set a default file to avoid error messages
+  filename <- normalizePath(file.path('www/Ageing',paste('Black-bellied Anglerfish','.png', sep='')))
+  if(input$species != ""){
         filename <- normalizePath(file.path('www/Ageing',paste(input$species,'.png', sep='')))
-        list(src = filename, width =300)}, deleteFile = FALSE)
+  }
+  list(src = filename, width =300)
+  
+}, deleteFile = FALSE)
     
-cc.a<-reactive({filter(cc.age,Species==as.character(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]]))})  
+cc.a<-reactive({
+  
+  #filter(cc.age,Species==as.character(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]]))
+  
+  # set a default value to prevent error messages
+  speciesToFilter <- "xxx"
+  if (input$species != ""){
+    speciesToFilter <- as.character(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]])
+  }
+  
+  filter(cc.age,Species==speciesToFilter)
+  
+})  
 
 # Reactive year filter based on years available by species
 output$yearfilter.a<- renderUI({

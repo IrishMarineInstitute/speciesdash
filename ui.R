@@ -7,7 +7,7 @@
 #
 ##### Packages #####
 library(shiny)
-library(leaflet)
+#library(leaflet)
 library(dplyr)
 library(shinythemes)
 library(plotly)
@@ -281,7 +281,7 @@ In order to assess the state of any fish stock, it is important to know the age 
                                                         a(href=paste0("https://www.marine.ie"),
                                                           "The Marine Institute webpage",target="_blank"),
                                                         p(),
-                                                        "For any quaries contact",
+                                                        "For any queries contact",
                                                        a("informatics@marine.ie",href="informatics@marine.ie")
                                                         )
                                    )#close tabsetPanel
