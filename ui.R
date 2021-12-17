@@ -8,7 +8,7 @@
 ##### Packages #####
 library(shiny)
 #library(leaflet)
-library(dplyr)
+#library(dplyr)
 library(shinythemes)
 library(plotly)
 #library(FSA)
@@ -16,7 +16,7 @@ library(htmltools)
 library(shinycssloaders)
 library(shinyWidgets)
 
-library(rgdal)
+#library(rgdal)
 library(tidyverse)
 
 shinyUI(
