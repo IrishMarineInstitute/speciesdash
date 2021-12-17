@@ -102,32 +102,32 @@ shinyServer(function(input, output, session){
     output$tabpic6b<-renderImage({
       filename <- normalizePath(file.path('www',paste("Sampled",'.png', sep='')))
       list(src = filename, width =500, height= 550)}, deleteFile = FALSE)
-    output$intro_tabset1<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"biology"])})
-    output$intro_tabset2a<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"distribution"])})
-    output$intro_tabset2b<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset2b"])})
-    output$intro_tabsetmap2 <- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"map2"])})
-    output$intro_tabset3<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset3"])})
-    output$intro_b1a<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"b1a"])})
-    output$intro_tabset4a<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset4a"])})
-    output$intro_tabset4b<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset4b"])})
-    output$intro_tabset5 <- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Ageing"])})
-    output$intro_tabset5b <- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Ageing2"])})
-    output$intro_tabset6 <- renderText({
-      as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"DataCol"])})
-    output$intro_tabset6a <- renderText({
-      as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Catchmap"])})
-    output$intro_tabset6b <- renderText({
-      as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Catch"])})
+    #output$intro_tabset1<- renderText({
+    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"biology"])})
+    #output$intro_tabset2a<- renderText({
+    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"distribution"])})
+    #output$intro_tabset2b<- renderText({
+    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset2b"])})
+    #output$intro_tabsetmap2 <- renderText({
+    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"map2"])})
+    #output$intro_tabset3<- renderText({
+    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset3"])})
+    #output$intro_b1a<- renderText({
+    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"b1a"])})
+    #output$intro_tabset4a<- renderText({
+    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset4a"])})
+    #output$intro_tabset4b<- renderText({
+    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset4b"])})
+    #output$intro_tabset5 <- renderText({
+    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Ageing"])})
+    #output$intro_tabset5b <- renderText({
+    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Ageing2"])})
+    #output$intro_tabset6 <- renderText({
+    #  as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"DataCol"])})
+    #output$intro_tabset6a <- renderText({
+    #  as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Catchmap"])})
+    #output$intro_tabset6b <- renderText({
+    #  as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Catch"])})
     ####### Fish Species page #######
     output$fish_b1a<- renderText({
         as.character(Supp_table[which(Supp_table[,"Fish"] %in% input$species),"b1a"])
