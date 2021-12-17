@@ -68,40 +68,40 @@ shinyServer(function(input, output, session){
             addProviderTiles(providers$Esri.OceanBasemap) %>% 
             setView(lng = -8.2124, lat = 53.2734, zoom = 6)
     })
-    output$fgmap1<-renderImage({ 
-        filename <- normalizePath(file.path('www',paste("FishingGrounds",'.jpg', sep='')))
-        list(src = filename, width = 500, height= 570)}, deleteFile = FALSE) 
-    output$fgmap2<-renderImage({
-        filename <- normalizePath(file.path('www',paste("PortPie",'.png', sep='')))
-        list(src = filename, width =500, height= 550, align = 'center')}, deleteFile = FALSE)
-    output$fgmap3<-renderImage({
-        filename <- normalizePath(file.path('www',paste("GearTypes",'.png', sep='')))
-        list(src = filename, width =500, height= 550)}, deleteFile = FALSE) 
-    output$fgmap4<-renderImage({
-        filename <- normalizePath(file.path('www',paste("NationalityAllGears",'.png', sep='')))
-        list(src = filename, width =475, height= 515)}, deleteFile = FALSE)
-    output$fgmap5<-renderImage({
-        filename <- normalizePath(file.path('www/Ageing',paste("otoliths in head with inset copy",'.jpg', sep='')))
-        list(src = filename, width =600, height= 500)}, deleteFile = FALSE) 
-    output$tabmap2<-renderImage({
-        filename <- normalizePath(file.path('www',paste("PortNames",'.png', sep='')))
-        list(src = filename, width =350, height= 400, style="display: block; margin-left: auto; margin-right: auto;")},
-        deleteFile = FALSE) 
+    #output$fgmap1<-renderImage({ 
+    #    filename <- normalizePath(file.path('www',paste("FishingGrounds",'.jpg', sep='')))
+    #    list(src = filename, width = 500, height= 570)}, deleteFile = FALSE) 
+    #output$fgmap2<-renderImage({
+    #    filename <- normalizePath(file.path('www',paste("PortPie",'.png', sep='')))
+    #    list(src = filename, width =500, height= 550, align = 'center')}, deleteFile = FALSE)
+    #output$fgmap3<-renderImage({
+    #    filename <- normalizePath(file.path('www',paste("GearTypes",'.png', sep='')))
+    #    list(src = filename, width =500, height= 550)}, deleteFile = FALSE) 
+    #output$fgmap4<-renderImage({
+    #    filename <- normalizePath(file.path('www',paste("NationalityAllGears",'.png', sep='')))
+    #    list(src = filename, width =475, height= 515)}, deleteFile = FALSE)
+    #output$fgmap5<-renderImage({
+    #    filename <- normalizePath(file.path('www/Ageing',paste("otoliths in head with inset copy",'.jpg', sep='')))
+    #    list(src = filename, width =600, height= 500)}, deleteFile = FALSE) 
+    #output$tabmap2<-renderImage({
+    #    filename <- normalizePath(file.path('www',paste("PortNames",'.png', sep='')))
+    #    list(src = filename, width =350, height= 400, style="display: block; margin-left: auto; margin-right: auto;")},
+    #    deleteFile = FALSE) 
     output$tabmap3<-renderImage({
         filename <- normalizePath(file.path('www',paste("GearTypes",'.png', sep='')))
         list(src = filename, width =550, height= 650)}, deleteFile = FALSE)
     output$gear_pic<-renderImage({
         filename <- normalizePath(file.path('www/GearPics',paste(input$gearpic,'.jpg', sep='')))
         list(src = filename, width =400, height= "auto")}, deleteFile = FALSE)
-    output$tabpic5<-renderImage({
-        filename <- normalizePath(file.path('www/Ageing',paste("agedexample",'.png', sep='')))
-        list(src = filename, width =400, height= 250)}, deleteFile = FALSE)
-    output$tabpic6a<-renderImage({
-      filename <- normalizePath(file.path('www',paste("Data",'.jpg', sep='')))
-      list(src = filename, width =750, height= 250)}, deleteFile = FALSE)
-    output$tabpic6b<-renderImage({
-      filename <- normalizePath(file.path('www',paste("Sampled",'.png', sep='')))
-      list(src = filename, width =500, height= 550)}, deleteFile = FALSE)
+    #output$tabpic5<-renderImage({
+    #    filename <- normalizePath(file.path('www/Ageing',paste("agedexample",'.png', sep='')))
+    #    list(src = filename, width =400, height= 250)}, deleteFile = FALSE)
+    #output$tabpic6a<-renderImage({
+    #  filename <- normalizePath(file.path('www',paste("Data",'.jpg', sep='')))
+    #  list(src = filename, width =750, height= 250)}, deleteFile = FALSE)
+    #output$tabpic6b<-renderImage({
+    #  filename <- normalizePath(file.path('www',paste("Sampled",'.png', sep='')))
+    #  list(src = filename, width =500, height= 550)}, deleteFile = FALSE)
     #output$intro_tabset1<- renderText({
     #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"biology"])})
     #output$intro_tabset2a<- renderText({
