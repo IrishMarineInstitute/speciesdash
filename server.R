@@ -488,7 +488,24 @@ output$GearFilter.a <- renderUI({
 
 
 grspage <- reactive({
-    grspageyear<- filter(cc.a(), Year %in% input$year.a)
+  
+    #grspageyear<- filter(cc.a(), Year %in% input$year.a)
+    
+    myYears <- c()
+    if (!is.null(input$year.a)){
+      if (length(input$year.a)>=2){
+        if (input$year.a[1] < input$year.a[2]){
+          myYears <- input$year.a[1]:input$year.a[2]
+        } else {
+          myYears <- c(input$year.a[1])
+        }
+      } else {
+        myYears <- input$year.a
+      }
+    }
+    #print(myYears)
+    grspageyear<- filter(cc.a(), Year %in% myYears)
+    
     
     if(input$quarter.a == "All" || is.null(input$quarter.a)){
         grspageqtr = grspageyear
