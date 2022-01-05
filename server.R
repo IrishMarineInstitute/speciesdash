@@ -7,11 +7,8 @@
 #
 # Load in the data
 
-#SpeciesList<-read.csv("Data/SpeciesList.csv")
 SpeciesList<-read.csv("Data/SpeciesList20211202.csv")
-#bio.data <- readRDS("Data/bio.data20200319.rds")
 bio.data <- readRDS("Data/bio.data20211202.rds")
-#cc.age<- readRDS("Data/cc.age20200319.rds")
 cc.age<- readRDS("Data/cc.age20211202.rds")
 Supp_table <- read.csv('Data/Supplemental data.csv', header=TRUE, sep = ",")
 
@@ -63,73 +60,11 @@ shinyServer(function(input, output, session){
     })
     
     ###### Introduction page #######
-    # djc 17/12/21 - output$intromap1 doesn't seem to do anything...
-    #output$intromap1 <- renderLeaflet({
-    #    leaflet() %>% 
-    #        addProviderTiles(providers$Esri.OceanBasemap) %>% 
-    #        setView(lng = -8.2124, lat = 53.2734, zoom = 6)
-    #})
-    #output$fgmap1<-renderImage({ 
-    #    filename <- normalizePath(file.path('www',paste("FishingGrounds",'.jpg', sep='')))
-    #    list(src = filename, width = 500, height= 570)}, deleteFile = FALSE) 
-    #output$fgmap2<-renderImage({
-    #    filename <- normalizePath(file.path('www',paste("PortPie",'.png', sep='')))
-    #    list(src = filename, width =500, height= 550, align = 'center')}, deleteFile = FALSE)
-    #output$fgmap3<-renderImage({
-    #    filename <- normalizePath(file.path('www',paste("GearTypes",'.png', sep='')))
-    #    list(src = filename, width =500, height= 550)}, deleteFile = FALSE) 
-    #output$fgmap4<-renderImage({
-    #    filename <- normalizePath(file.path('www',paste("NationalityAllGears",'.png', sep='')))
-    #    list(src = filename, width =475, height= 515)}, deleteFile = FALSE)
-    #output$fgmap5<-renderImage({
-    #    filename <- normalizePath(file.path('www/Ageing',paste("otoliths in head with inset copy",'.jpg', sep='')))
-    #    list(src = filename, width =600, height= 500)}, deleteFile = FALSE) 
-    #output$tabmap2<-renderImage({
-    #    filename <- normalizePath(file.path('www',paste("PortNames",'.png', sep='')))
-    #    list(src = filename, width =350, height= 400, style="display: block; margin-left: auto; margin-right: auto;")},
-    #    deleteFile = FALSE) 
-    # djc 17/12/21 - output$tabmap3 doesn't seem to do anything...
-    #output$tabmap3<-renderImage({
-    #    filename <- normalizePath(file.path('www',paste("GearTypes",'.png', sep='')))
-    #    list(src = filename, width =550, height= 650)}, deleteFile = FALSE)
+    
     output$gear_pic<-renderImage({
         filename <- normalizePath(file.path('www/GearPics',paste(input$gearpic,'.jpg', sep='')))
         list(src = filename, width =400, height= "auto")}, deleteFile = FALSE)
-    #output$tabpic5<-renderImage({
-    #    filename <- normalizePath(file.path('www/Ageing',paste("agedexample",'.png', sep='')))
-    #    list(src = filename, width =400, height= 250)}, deleteFile = FALSE)
-    #output$tabpic6a<-renderImage({
-    #  filename <- normalizePath(file.path('www',paste("Data",'.jpg', sep='')))
-    #  list(src = filename, width =750, height= 250)}, deleteFile = FALSE)
-    #output$tabpic6b<-renderImage({
-    #  filename <- normalizePath(file.path('www',paste("Sampled",'.png', sep='')))
-    #  list(src = filename, width =500, height= 550)}, deleteFile = FALSE)
-    #output$intro_tabset1<- renderText({
-    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"biology"])})
-    #output$intro_tabset2a<- renderText({
-    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"distribution"])})
-    #output$intro_tabset2b<- renderText({
-    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset2b"])})
-    #output$intro_tabsetmap2 <- renderText({
-    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"map2"])})
-    #output$intro_tabset3<- renderText({
-    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset3"])})
-    #output$intro_b1a<- renderText({
-    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"b1a"])})
-    #output$intro_tabset4a<- renderText({
-    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset4a"])})
-    #output$intro_tabset4b<- renderText({
-    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset4b"])})
-    #output$intro_tabset5 <- renderText({
-    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Ageing"])})
-    #output$intro_tabset5b <- renderText({
-    #    as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Ageing2"])})
-    #output$intro_tabset6 <- renderText({
-    #  as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"DataCol"])})
-    #output$intro_tabset6a <- renderText({
-    #  as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Catchmap"])})
-    #output$intro_tabset6b <- renderText({
-    #  as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Catch"])})
+    
     ####### Fish Species page #######
     output$fish_b1a<- renderText({
         as.character(Supp_table[which(Supp_table[,"Fish"] %in% input$species),"b1a"])
@@ -210,8 +145,6 @@ shinyServer(function(input, output, session){
 ######## Length/Weight #######
 grsp <-reactive({
   
-  #filter(bio.data,Species==as.character(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]]))})
-  
   # set a default value to prevent error messages
   speciesToFilter <- "xxx"
   if (input$species != ""){
@@ -252,10 +185,8 @@ grsp <-reactive({
         gearlist2 = factor(append("All", as.character(gearlist)))
         selectInput(inputId="gearselect", label="Select gear type", choices=gearlist2, selected= "All")
     })
-    grspnew.w<- reactive({
+grspnew.w<- reactive({
         
-        #grspyear<- filter(grsp(), Year %in% input$year)
-        #print(input$year)
         myYears <- c()
         if (!is.null(input$year)){
           if (length(input$year)>=2){
@@ -268,7 +199,7 @@ grsp <-reactive({
             myYears <- input$year
           }
         }
-        #print(myYears)
+        
         grspyear<- filter(grsp(), Year %in% myYears)
         
         if(input$quarter == "All" || is.null(input$quarter)){
@@ -478,13 +409,10 @@ grsp <-reactive({
             myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
           } 
           
-            #p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter',color=~Weight, colors="Spectral",
-              #mode = 'markers', marker =list(opacity = 0.5),
            p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter',
                          mode = 'markers', marker =list(opacity = 0.5,color='black'),
                          hoverinfo='text',
                          text=~paste("length:",Length,"cm<br>weight:",Weight, "grams<br>Date:", Date)) %>%
-                        #text=~paste("Length:",Length,"cm<br>Weight:",Weight, "g")) %>%
                 layout(hovermode='closest', 
                        title=paste(input$species," Weight vs Length", sep=""),
                        xaxis = list(title = 'Length (cm)', range= c(minX, maxX), showline = TRUE),
@@ -512,8 +440,6 @@ output$speciesotolith<-renderImage({
     
 cc.a<-reactive({
   
-  #filter(cc.age,Species==as.character(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]]))
-  
   # set a default value to prevent error messages
   speciesToFilter <- "xxx"
   if (input$species != ""){
@@ -526,10 +452,18 @@ cc.a<-reactive({
 
 # Reactive year filter based on years available by species
 output$yearfilter.a<- renderUI({
-    sliderInput("year.a","Years", min=min(cc.a()$Year, na.rm=TRUE), max=max(cc.a()$Year, na.rm=TRUE), 
-                #value =max(cc.a()$Year, na.rm=TRUE)
-                #value = c(min(cc.a()$Year, na.rm=TRUE), max(cc.a()$Year, na.rm=TRUE) ),
-                value = c( max(cc.a()$Year, na.rm=TRUE) - 1, max(cc.a()$Year, na.rm=TRUE) ),
+  
+  # set default values to avoid errors
+  if (length(cc.a()$Year)> 0){
+    minYear <- min(cc.a()$Year, na.rm=TRUE)
+    maxYear <- max(cc.a()$Year, na.rm=TRUE)
+  } else {
+    minYear <- 2019
+    maxYear <- 2020
+  }
+  
+    sliderInput("year.a","Years", min=minYear, max=maxYear, 
+                value = c( maxYear-1, maxYear ),
                 sep="", step=1)
 })
 
@@ -550,8 +484,6 @@ output$GearFilter.a <- renderUI({
 
 grspage <- reactive({
   
-    #grspageyear<- filter(cc.a(), Year %in% input$year.a)
-    
     myYears <- c()
     if (!is.null(input$year.a)){
       if (length(input$year.a)>=2){
@@ -564,7 +496,7 @@ grspage <- reactive({
         myYears <- input$year.a
       }
     }
-    #print(myYears)
+    
     grspageyear<- filter(cc.a(), Year %in% myYears)
     
     
@@ -611,7 +543,7 @@ observe({
   if(input$Id.a=="ICES Area"){     
     if(is.null(input$year.a)){
          return()
-    }else{# ....
+    }else{
       
       x <- str_sort(as.character(unique(grspage()$ICESSubArea )),numeric = TRUE)
       updatePickerInput(session, "subselect.a",label="ICES Area", choices=x,selected = x)
@@ -620,7 +552,7 @@ observe({
   else{
     if(is.null(input$year.a)){
       return()
-    }else{# ....
+    }else{
       
       x <- str_sort(as.character(unique(grspage()$ICESDivFullNameN )),numeric = TRUE)
       updatePickerInput(session, "subselect2.a",label="ICES Division", choices=x,selected = x)
@@ -758,9 +690,6 @@ output$bio_la<- renderPlotly({
         myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
       } 
       
-        #p <- plot_ly(grspnew.a1(), x = grspnew.a1()$AgeContin, y = grspnew.a1()$Length,
-                     #color= ~Age, colors = 'Paired',hoverinfo='text',
-                     #type = 'scatter', mode = 'markers', marker =list(opacity = 0.5),
         p <- plot_ly(grspnew.a1, x = ~Age, y = ~Length,
                      hoverinfo='text',
                      type = 'scatter', mode = 'markers', marker =list(opacity = 0.5,color = 'black'),
