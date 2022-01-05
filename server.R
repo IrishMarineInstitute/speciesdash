@@ -231,11 +231,17 @@ grsp <-reactive({
     # Reactive year filter based on years available by species
     output$yearfilter<- renderUI({
        
-        sliderInput("year","Years", min=min(grsp()$Year, na.rm=TRUE), max=max(grsp()$Year, na.rm=TRUE), 
-                    # value =c(min(grsp()$Year, na.rm=TRUE),max(grsp()$Year, na.rm=TRUE)) ,sep="", step=1)##all years
-                    #value =max(grsp()$Year, na.rm=TRUE) 
-                    #value = c(min(grsp()$Year, na.rm=TRUE), max(grsp()$Year, na.rm=TRUE) )
-                    value = c( max(grsp()$Year, na.rm=TRUE) - 1, max(grsp()$Year, na.rm=TRUE) )
+      # set default values to avoid errors
+      if (length(grsp()$Year)> 0){
+        minYear <- min(grsp()$Year, na.rm=TRUE)
+        maxYear <- max(grsp()$Year, na.rm=TRUE)
+      } else {
+        minYear <- 2019
+        maxYear <- 2020
+      }
+      
+        sliderInput("year","Years", min=minYear, max=maxYear, 
+                     value = c( maxYear -1, maxYear )
                     ,sep="", step=1)##by one year
         
     })
@@ -348,17 +354,35 @@ grsp <-reactive({
 
     ###Plotly charts
     output$bio_lw<- renderPlotly({
+      
+        validate(need(nrow(grspnew.w1()) > 0, "No data to plot for the selected parameters"))
+        # Max number of points we will plot on a chart - for performance reasons
+        maxPointsToPlot <- 10000 
+        myAnnotation <- ''
+        # Set ranges for axes
+        minX <- min(grspnew.w1()$Length)-1
+        maxX <- max(grspnew.w1()$Length)+1
+        minY <- 0
+        maxY <- max(grspnew.w1()$Weight, na.rm = T)*1.05
+        
         if(input$biooptionselection=="Sex"){
             grspnew.w1 <- filter(grspnew.w1(), !is.na(Sex))
             validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            # if there's a lot of data to plot just plot a sample of it
+            if (nrow(grspnew.w1)> maxPointsToPlot){
+              grspnew.w1 <- grspnew.w1[sample(nrow(grspnew.w1), maxPointsToPlot), ]
+              myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+            } 
+            
             p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', 
                          text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>sex:", Sex),
                          hoverinfo='text',
                          color = ~Sex, colors="Set1",
                          mode = 'markers', marker =list(opacity = 0.5)) %>% 
                 layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by sex)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length)-1, max(grspnew.w1()$Length)+1), showline = TRUE),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05), showline = TRUE),
+                       xaxis = list(title = 'Length (cm)', range= c(minX, maxX), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(minY, maxY), showline = TRUE),
+                       annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                        margin=(list(t=70)),
                        showlegend = TRUE) 
             p$elementId <- NULL
@@ -367,13 +391,19 @@ grsp <-reactive({
             grspnew.w1 <- filter(grspnew.w1(), Age>-1)
             grspnew.w1 <- filter(grspnew.w1, !is.na(Age))
             validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            # if there's a lot of data to plot just plot a sample of it
+            if (nrow(grspnew.w1)> maxPointsToPlot){
+              grspnew.w1 <- grspnew.w1[sample(nrow(grspnew.w1), maxPointsToPlot), ]
+              myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+            } 
 
               p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
                 text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>Age:", Age),
                 color= ~Age, colors = "Set1",marker =list(opacity = 0.5)) %>%  
               layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by age)"),
-                xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length)-1, max(grspnew.w1()$Length)+1), showline = TRUE),
-                yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05), showline = TRUE),
+                xaxis = list(title = 'Length (cm)', range= c(minX, maxX), showline = TRUE),
+                yaxis = list(title = 'Weight (g)', range = c(minY, maxY), showline = TRUE),
+                annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                 margin=(list(t=70)),
                 showlegend = FALSE)
             p$elementId <- NULL
@@ -381,12 +411,19 @@ grsp <-reactive({
         }else if(input$biooptionselection=="Presentation"){
             grspnew.w1 <- filter(grspnew.w1(), !is.na(Presentation))
             validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            # if there's a lot of data to plot just plot a sample of it
+            if (nrow(grspnew.w1)> maxPointsToPlot){
+              grspnew.w1 <- grspnew.w1[sample(nrow(grspnew.w1), maxPointsToPlot), ]
+              myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+            } 
+            
             p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
                          text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>presentation:", Presentation),
                          color= ~Presentation, colors = "Dark2") %>%  
                 layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by sample presentation)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length)-1, max(grspnew.w1()$Length)+1), showline = TRUE),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05), showline = TRUE),
+                       xaxis = list(title = 'Length (cm)', range= c(minX, maxX), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(minY, maxY), showline = TRUE),
+                       annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                        margin=(list(t=70)),
                        showlegend = TRUE)
             p$elementId <- NULL
@@ -394,12 +431,19 @@ grsp <-reactive({
         }else if(input$biooptionselection=="Sample Type"){
             grspnew.w1 <- filter(grspnew.w1(), !is.na(Type))
             validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            # if there's a lot of data to plot just plot a sample of it
+            if (nrow(grspnew.w1)> maxPointsToPlot){
+              grspnew.w1 <- grspnew.w1[sample(nrow(grspnew.w1), maxPointsToPlot), ]
+              myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+            } 
+            
             p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
                          text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>sample type:",Type), 
                          color= ~Type,colors =c('Discards'='red','Landings'='lightgreen')) %>%  
                 layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by sample type)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length)-1, max(grspnew.w1()$Length)+1), showline = TRUE),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05), showline = TRUE),
+                       xaxis = list(title = 'Length (cm)', range= c(minX, maxX), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(minY, maxY), showline = TRUE),
+                       annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                        margin=(list(t=70)),
                        showlegend = TRUE)
             p$elementId <- NULL
@@ -407,30 +451,47 @@ grsp <-reactive({
         }else if(input$biooptionselection=="Gear"){
             grspnew.w1 <- filter(grspnew.w1(), !is.na(Gear))
             validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            # if there's a lot of data to plot just plot a sample of it
+            if (nrow(grspnew.w1)> maxPointsToPlot){
+              grspnew.w1 <- grspnew.w1[sample(nrow(grspnew.w1), maxPointsToPlot), ]
+              myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+            } 
+            
             p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
                          text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>gear type:",Gear),
                          color= ~Gear,colors = "Set1") %>%  
                 layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by gear type)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length)-1, max(grspnew.w1()$Length)+1), showline = TRUE),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05), showline = TRUE),
+                       xaxis = list(title = 'Length (cm)', range= c(minX, maxX), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(minY, maxY), showline = TRUE),
+                       annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                        margin=(list(t=70)),
                        showlegend = TRUE)
             p$elementId <- NULL
             p 
         }
         else{
+          grspnew.w1 <- grspnew.w1()
           validate(need(nrow(grspnew.w1()) > 0, "No data to plot for the selected parameters"))
+          # if there's a lot of data to plot just plot a sample of it
+          if (nrow(grspnew.w1)> maxPointsToPlot){
+            grspnew.w1 <- grspnew.w1[sample(nrow(grspnew.w1), maxPointsToPlot), ]
+            myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+          } 
+          
             #p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter',color=~Weight, colors="Spectral",
               #mode = 'markers', marker =list(opacity = 0.5),
-           p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter',
+           p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter',
                          mode = 'markers', marker =list(opacity = 0.5,color='black'),
                          hoverinfo='text',
                          text=~paste("length:",Length,"cm<br>weight:",Weight, "grams<br>Date:", Date)) %>%
                         #text=~paste("Length:",Length,"cm<br>Weight:",Weight, "g")) %>%
-                layout(hovermode='closest', title=paste(input$species," Weight vs Length", sep=""),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length)-1, max(grspnew.w1()$Length)+1), showline = TRUE),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05), showline = TRUE),
-                       margin=(list(t=80)),
+                layout(hovermode='closest', 
+                       title=paste(input$species," Weight vs Length", sep=""),
+                       xaxis = list(title = 'Length (cm)', range= c(minX, maxX), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(minY, maxY), showline = TRUE),
+                       annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
+                       margin=(list(t=80)
+                      ),
                        showlegend = FALSE)
             p$elementId <- NULL
             p
@@ -588,16 +649,36 @@ output$downloadDatala <- downloadHandler(
     })
 
 output$bio_la<- renderPlotly({
+  
+    validate(need(nrow(grspnew.a1()) > 0, "No data to plot for the selected parameters"))
+    # Max number of points we will plot on a chart - for performance reasons
+    maxPointsToPlot <- 10000 
+    myAnnotation <- ''
+    # Set ranges for axes
+    minX <- 0
+    maxX <- max(grspnew.a1()$Age)+1
+    minY <- min(grspnew.a1()$Length)-1
+    maxY <- max(grspnew.a1()$Length)+1
+
     if(input$ageoptionselection=="Sex"){
-      validate(need(nrow(grspnew.a1()) > 0, "No data to plot for the selected parameters"))
-        p <- plot_ly(grspnew.a1(), x = ~Age , y =~Length,
+      
+      grspnew.a1 <- filter(grspnew.a1(), !is.na(Sex))
+      validate(need(nrow(grspnew.a1) > 0, "No data to plot for the selected parameters"))
+      # if there's a lot of data to plot just plot a sample of it
+      if (nrow(grspnew.a1)> maxPointsToPlot){
+        grspnew.a1 <- grspnew.a1[sample(nrow(grspnew.a1), maxPointsToPlot), ]
+        myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+      } 
+      
+        p <- plot_ly(grspnew.a1, x = ~Age , y =~Length,
                      type = 'scatter', mode = 'markers',hoverinfo='text',
                      text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date, "<br>sex:", Sex), 
                      color = ~Sex, colors = "Set1",
                      mode = 'markers') %>% 
             layout(hovermode='closest', title=paste(input$species,"length at age (points coloured by sex)"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$Age)+1), showline = TRUE),
-                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length)-1, max(grspnew.a1()$Length)+1), showline = TRUE),
+                   xaxis = list(title = 'Age', range= c(minX, maxX), showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(minY, maxY), showline = TRUE),
+                   annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                    margin=(list(t=50)),
                    showlegend = TRUE) 
         p$elementId <- NULL
@@ -605,13 +686,21 @@ output$bio_la<- renderPlotly({
     }else if(input$ageoptionselection=="Presentation"){
         grspnew.a1 <- filter(grspnew.a1(), !is.na(Presentation))
         validate(need(nrow(grspnew.a1) > 0, "No data to plot for the selected parameters"))
+        # if there's a lot of data to plot just plot a sample of it
+        if (nrow(grspnew.a1)> maxPointsToPlot){
+          grspnew.a1 <- grspnew.a1[sample(nrow(grspnew.a1), maxPointsToPlot), ]
+          myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+        } 
+        
         p <- plot_ly(grspnew.a1, x = ~Age, y = ~Length, 
                      type = 'scatter', mode = 'markers',hoverinfo='text',
                      text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date, "<br>presentation:", Presentation),
                      color= ~Presentation,colors = "Dark2") %>%  
-            layout(hovermode='closest', title=paste(input$species,"length at age (points coloured by presentation)"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$Age)+1), showline = TRUE),
-                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length)-1, max(grspnew.a1()$Length)+1), showline = TRUE),
+            layout(hovermode='closest',
+                   title=paste(input$species,"length at age (points coloured by presentation)"),
+                   xaxis = list(title = 'Age', range= c(minX, maxX), showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(minY, maxY), showline = TRUE),
+                   annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                    margin=(list(t=50)),
                    showlegend = TRUE) 
         p$elementId <- NULL
@@ -619,13 +708,21 @@ output$bio_la<- renderPlotly({
     }else if(input$ageoptionselection=="Sample Type"){
         grspnew.a1 <- filter(grspnew.a1(), !is.na(Type))
         validate(need(nrow(grspnew.a1) > 0, "No data to plot for the selected parameters"))
+        # if there's a lot of data to plot just plot a sample of it
+        if (nrow(grspnew.a1)> maxPointsToPlot){
+          grspnew.a1 <- grspnew.a1[sample(nrow(grspnew.a1), maxPointsToPlot), ]
+          myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+        } 
+        
         p <- plot_ly(grspnew.a1, x = ~Age, y = ~Length,
                      type = 'scatter', mode = 'markers',hoverinfo='text',
                      text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date, "<br>sample type:",Type),
                      color= ~Type,colors =c('Discards'='red','Landings'='lightgreen')) %>%  
-            layout(hovermode='closest', title=paste(input$species,"length at age (points coloured by sample type)"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$Age)+1), showline = TRUE),
-                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length)-1, max(grspnew.a1()$Length)+1), showline = TRUE),
+            layout(hovermode='closest',
+                   title=paste(input$species,"length at age (points coloured by sample type)"),
+                   xaxis = list(title = 'Age', range= c(minX, maxX), showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(minY, maxY), showline = TRUE),
+                   annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                    margin=(list(t=50)),
                    showlegend = TRUE) 
         p$elementId <- NULL
@@ -633,30 +730,47 @@ output$bio_la<- renderPlotly({
     }else if(input$ageoptionselection=="Gear"){
         grspnew.a1 <- filter(grspnew.a1(), !is.na(Gear))
         validate(need(nrow(grspnew.a1) > 0, "No data to plot for the selected parameters"))
+        # if there's a lot of data to plot just plot a sample of it
+        if (nrow(grspnew.a1)> maxPointsToPlot){
+          grspnew.a1 <- grspnew.a1[sample(nrow(grspnew.a1), maxPointsToPlot), ]
+          myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+        } 
+        
         p <- plot_ly(grspnew.a1, x = ~Age, y = ~Length,
                      type = 'scatter', mode = 'markers',hoverinfo='text',
                      text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date, "<br>gear type:",Gear),
                      color= ~Gear,colors = "Set1") %>%  
-            layout(hovermode='closest', title=paste(input$species,"length at age (points coloured by gear type)"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$Age)+1), showline = TRUE),
-                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length)-1, max(grspnew.a1()$Length)+1), showline = TRUE),
+            layout(hovermode='closest',
+                   title=paste(input$species,"length at age (points coloured by gear type)"),
+                   xaxis = list(title = 'Age', range= c(minX, maxX), showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(minY, maxY), showline = TRUE),
+                   annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                    margin=(list(t=50)),
                    showlegend = TRUE) 
         p$elementId <- NULL
         p 
     }else{
-      validate(need(nrow(grspnew.a1()) > 0, "No data to plot for the selected parameters"))
+      grspnew.a1 <- grspnew.a1()
+      validate(need(nrow(grspnew.a1) > 0, "No data to plot for the selected parameters"))
+      # if there's a lot of data to plot just plot a sample of it
+      if (nrow(grspnew.a1)> maxPointsToPlot){
+        grspnew.a1 <- grspnew.a1[sample(nrow(grspnew.a1), maxPointsToPlot), ]
+        myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+      } 
+      
         #p <- plot_ly(grspnew.a1(), x = grspnew.a1()$AgeContin, y = grspnew.a1()$Length,
                      #color= ~Age, colors = 'Paired',hoverinfo='text',
                      #type = 'scatter', mode = 'markers', marker =list(opacity = 0.5),
-        p <- plot_ly(grspnew.a1(), x = ~Age, y = ~Length,
+        p <- plot_ly(grspnew.a1, x = ~Age, y = ~Length,
                      hoverinfo='text',
                      type = 'scatter', mode = 'markers', marker =list(opacity = 0.5,color = 'black'),
                      text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date))%>% 
                      #text=~paste("Age:",Age,"<br>Mean Length:",Length,"cm"))%>% 
-            layout(hovermode='closest', title=paste(input$species,"length at age"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$Age)+1) ,showline = TRUE),
-                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length)-1, max(grspnew.a1()$Length)+1), showline = TRUE),
+            layout(hovermode='closest',
+                   title=paste(input$species,"length at age"),
+                   xaxis = list(title = 'Age', range= c(minX, maxX) ,showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(minY, maxY), showline = TRUE),
+                   annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                    margin=(list(t=50)),
                    showlegend = FALSE)
         p$elementId <- NULL
