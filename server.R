@@ -7,9 +7,9 @@
 #
 # Load in the data
 
-SpeciesList<-read.csv("Data/SpeciesList.csv")
-bio.data <- readRDS("Data/bio.data20200319.rds")
-cc.age<- readRDS("Data/cc.age20200319.rds")
+SpeciesList<-read.csv("Data/SpeciesList20211202.csv")
+bio.data <- readRDS("Data/bio.data20211202.rds")
+cc.age<- readRDS("Data/cc.age20211202.rds")
 Supp_table <- read.csv('Data/Supplemental data.csv', header=TRUE, sep = ",")
 
 Mode <- function(x) {
@@ -60,71 +60,11 @@ shinyServer(function(input, output, session){
     })
     
     ###### Introduction page #######
-    output$intromap1 <- renderLeaflet({
-        leaflet() %>% 
-            addProviderTiles(providers$Esri.OceanBasemap) %>% 
-            setView(lng = -8.2124, lat = 53.2734, zoom = 6)
-    })
-    output$fgmap1<-renderImage({ 
-        filename <- normalizePath(file.path('www',paste("FishingGrounds",'.jpg', sep='')))
-        list(src = filename, width = 500, height= 570)}, deleteFile = FALSE) 
-    output$fgmap2<-renderImage({
-        filename <- normalizePath(file.path('www',paste("PortPie",'.png', sep='')))
-        list(src = filename, width =500, height= 550, align = 'center')}, deleteFile = FALSE)
-    output$fgmap3<-renderImage({
-        filename <- normalizePath(file.path('www',paste("GearTypes",'.png', sep='')))
-        list(src = filename, width =500, height= 550)}, deleteFile = FALSE) 
-    output$fgmap4<-renderImage({
-        filename <- normalizePath(file.path('www',paste("NationalityAllGears",'.png', sep='')))
-        list(src = filename, width =475, height= 515)}, deleteFile = FALSE)
-    output$fgmap5<-renderImage({
-        filename <- normalizePath(file.path('www/Ageing',paste("otoliths in head with inset copy",'.jpg', sep='')))
-        list(src = filename, width =600, height= 500)}, deleteFile = FALSE) 
-    output$tabmap2<-renderImage({
-        filename <- normalizePath(file.path('www',paste("PortNames",'.png', sep='')))
-        list(src = filename, width =350, height= 400, style="display: block; margin-left: auto; margin-right: auto;")},
-        deleteFile = FALSE) 
-    output$tabmap3<-renderImage({
-        filename <- normalizePath(file.path('www',paste("GearTypes",'.png', sep='')))
-        list(src = filename, width =550, height= 650)}, deleteFile = FALSE)
+    
     output$gear_pic<-renderImage({
         filename <- normalizePath(file.path('www/GearPics',paste(input$gearpic,'.jpg', sep='')))
         list(src = filename, width =400, height= "auto")}, deleteFile = FALSE)
-    output$tabpic5<-renderImage({
-        filename <- normalizePath(file.path('www/Ageing',paste("agedexample",'.png', sep='')))
-        list(src = filename, width =400, height= 250)}, deleteFile = FALSE)
-    output$tabpic6a<-renderImage({
-      filename <- normalizePath(file.path('www',paste("Data",'.jpg', sep='')))
-      list(src = filename, width =750, height= 250)}, deleteFile = FALSE)
-    output$tabpic6b<-renderImage({
-      filename <- normalizePath(file.path('www',paste("Sampled",'.png', sep='')))
-      list(src = filename, width =500, height= 550)}, deleteFile = FALSE)
-    output$intro_tabset1<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"biology"])})
-    output$intro_tabset2a<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"distribution"])})
-    output$intro_tabset2b<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset2b"])})
-    output$intro_tabsetmap2 <- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"map2"])})
-    output$intro_tabset3<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset3"])})
-    output$intro_b1a<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"b1a"])})
-    output$intro_tabset4a<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset4a"])})
-    output$intro_tabset4b<- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"tabset4b"])})
-    output$intro_tabset5 <- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Ageing"])})
-    output$intro_tabset5b <- renderText({
-        as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Ageing2"])})
-    output$intro_tabset6 <- renderText({
-      as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"DataCol"])})
-    output$intro_tabset6a <- renderText({
-      as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Catchmap"])})
-    output$intro_tabset6b <- renderText({
-      as.character(Supp_table[which(Supp_table[,"Fish"] == "All Species"),"Catch"])})
+    
     ####### Fish Species page #######
     output$fish_b1a<- renderText({
         as.character(Supp_table[which(Supp_table[,"Fish"] %in% input$species),"b1a"])
@@ -150,6 +90,12 @@ shinyServer(function(input, output, session){
     })
     
     
+    ## Clear the value of input$lengthcm when input$species is changed
+    observeEvent(input$species,{
+      #print("input$species event observed")
+      updateTextInput(session, "lengthcm", value = "")
+    }, ignoreNULL = TRUE, ignoreInit = TRUE)
+    
     ##### Age/length widget ######
     x1 <- reactive({cc.age$Age[which(cc.age$Species==paste(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]]) & 
                                          cc.age$Length== paste(input$lengthcm))]})
@@ -171,10 +117,16 @@ shinyServer(function(input, output, session){
         
         output$age_hist <- renderPlotly({
           yy<-as.data.frame(y1())
-          yy$age<-as.factor(yy$y1)
-          p<-ggplot(yy,aes(age))+geom_bar(color="black",fill="white",width = 1)+
-          labs(title ='Histogram of observered ages',x="Age" )
-          ggplotly(p)
+          
+          # Don't show the graph if there's no data
+          if (nrow(yy) == 0){
+            NULL
+          } else {
+            yy$age<-as.factor(yy$y1)
+            p<-ggplot(yy,aes(age))+geom_bar(color="black",fill="white",width = 1)+
+            labs(title ='Histogram of observered ages',x="Age" )
+            ggplotly(p)
+          }
          
         })
     })
@@ -192,7 +144,16 @@ shinyServer(function(input, output, session){
     
 ######## Length/Weight #######
 grsp <-reactive({
- filter(bio.data,Species==as.character(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]]))})
+  
+  # set a default value to prevent error messages
+  speciesToFilter <- "xxx"
+  if (input$species != ""){
+    speciesToFilter <- as.character(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]])
+  }
+ 
+  filter(bio.data,Species==speciesToFilter)
+ 
+ })
   
     # Reactive quarter filter based on quarters available by species
     output$quarterfilter<- renderUI({
@@ -203,9 +164,18 @@ grsp <-reactive({
     # Reactive year filter based on years available by species
     output$yearfilter<- renderUI({
        
-        sliderInput("year","Years", min=min(grsp()$Year, na.rm=TRUE), max=max(grsp()$Year, na.rm=TRUE), 
-                    # value =c(min(grsp()$Year, na.rm=TRUE),max(grsp()$Year, na.rm=TRUE)) ,sep="", step=1)##all years
-                    value =max(grsp()$Year, na.rm=TRUE) ,sep="", step=1)##by one year
+      # set default values to avoid errors
+      if (length(grsp()$Year)> 0){
+        minYear <- min(grsp()$Year, na.rm=TRUE)
+        maxYear <- max(grsp()$Year, na.rm=TRUE)
+      } else {
+        minYear <- 2019
+        maxYear <- 2020
+      }
+      
+        sliderInput("year","Years", min=minYear, max=maxYear, 
+                     value = c( maxYear -1, maxYear )
+                    ,sep="", step=1)##by one year
         
     })
     
@@ -215,9 +185,22 @@ grsp <-reactive({
         gearlist2 = factor(append("All", as.character(gearlist)))
         selectInput(inputId="gearselect", label="Select gear type", choices=gearlist2, selected= "All")
     })
-    grspnew.w<- reactive({
+grspnew.w<- reactive({
         
-        grspyear<- filter(grsp(), Year %in% input$year)
+        myYears <- c()
+        if (!is.null(input$year)){
+          if (length(input$year)>=2){
+            if (input$year[1] < input$year[2]){
+              myYears <- input$year[1]:input$year[2]
+            } else {
+              myYears <- c(input$year[1])
+            }
+          } else {
+            myYears <- input$year
+          }
+        }
+        
+        grspyear<- filter(grsp(), Year %in% myYears)
         
         if(input$quarter == "All" || is.null(input$quarter)){
             grspqtr = grspyear
@@ -302,77 +285,141 @@ grsp <-reactive({
 
     ###Plotly charts
     output$bio_lw<- renderPlotly({
+      
+        validate(need(nrow(grspnew.w1()) > 0, "No data to plot for the selected parameters"))
+        # Max number of points we will plot on a chart - for performance reasons
+        maxPointsToPlot <- 10000 
+        myAnnotation <- ''
+        # Set ranges for axes
+        minX <- min(grspnew.w1()$Length)-1
+        maxX <- max(grspnew.w1()$Length)+1
+        minY <- 0
+        maxY <- max(grspnew.w1()$Weight, na.rm = T)*1.05
+        
         if(input$biooptionselection=="Sex"){
             grspnew.w1 <- filter(grspnew.w1(), !is.na(Sex))
-            p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter', 
-                         text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date),
+            validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            # if there's a lot of data to plot just plot a sample of it
+            if (nrow(grspnew.w1)> maxPointsToPlot){
+              grspnew.w1 <- grspnew.w1[sample(nrow(grspnew.w1), maxPointsToPlot), ]
+              myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+            } 
+            
+            p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', 
+                         text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>sex:", Sex),
                          hoverinfo='text',
                          color = ~Sex, colors="Set1",
                          mode = 'markers', marker =list(opacity = 0.5)) %>% 
-                layout(hovermode=TRUE, title=paste(input$species,"Length vs Weight (points coloured by sex)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length), max(grspnew.w1()$Length)+1)),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05)),
+                layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by sex)"),
+                       xaxis = list(title = 'Length (cm)', range= c(minX, maxX), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(minY, maxY), showline = TRUE),
+                       annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                        margin=(list(t=70)),
                        showlegend = TRUE) 
             p$elementId <- NULL
             p 
         }else if(input$biooptionselection=="Age"){
             grspnew.w1 <- filter(grspnew.w1(), Age>-1)
-            p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
-                         text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>Age:", Age),
-                         color= ~Age, colors = "Set1",marker =list(opacity = 0.5)) %>%  
-                layout(hovermode=TRUE, title=paste(input$species,"Length vs Weight (points coloured by age)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length), max(grspnew.w1()$Length)+1)),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05)),
-                       margin=(list(t=70)),
-                       showlegend = FALSE)
+            grspnew.w1 <- filter(grspnew.w1, !is.na(Age))
+            validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            # if there's a lot of data to plot just plot a sample of it
+            if (nrow(grspnew.w1)> maxPointsToPlot){
+              grspnew.w1 <- grspnew.w1[sample(nrow(grspnew.w1), maxPointsToPlot), ]
+              myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+            } 
+
+              p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
+                text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>Age:", Age),
+                color= ~Age, colors = "Set1",marker =list(opacity = 0.5)) %>%  
+              layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by age)"),
+                xaxis = list(title = 'Length (cm)', range= c(minX, maxX), showline = TRUE),
+                yaxis = list(title = 'Weight (g)', range = c(minY, maxY), showline = TRUE),
+                annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
+                margin=(list(t=70)),
+                showlegend = FALSE)
             p$elementId <- NULL
             p 
         }else if(input$biooptionselection=="Presentation"){
             grspnew.w1 <- filter(grspnew.w1(), !is.na(Presentation))
-            p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
+            validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            # if there's a lot of data to plot just plot a sample of it
+            if (nrow(grspnew.w1)> maxPointsToPlot){
+              grspnew.w1 <- grspnew.w1[sample(nrow(grspnew.w1), maxPointsToPlot), ]
+              myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+            } 
+            
+            p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
                          text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>presentation:", Presentation),
                          color= ~Presentation, colors = "Dark2") %>%  
-                layout(hovermode=TRUE, title=paste(input$species,"Length vs Weight (points coloured by sample presentation)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length), max(grspnew.w1()$Length)+1)),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05)),
+                layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by sample presentation)"),
+                       xaxis = list(title = 'Length (cm)', range= c(minX, maxX), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(minY, maxY), showline = TRUE),
+                       annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                        margin=(list(t=70)),
                        showlegend = TRUE)
             p$elementId <- NULL
             p 
         }else if(input$biooptionselection=="Sample Type"){
             grspnew.w1 <- filter(grspnew.w1(), !is.na(Type))
-            p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
+            validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            # if there's a lot of data to plot just plot a sample of it
+            if (nrow(grspnew.w1)> maxPointsToPlot){
+              grspnew.w1 <- grspnew.w1[sample(nrow(grspnew.w1), maxPointsToPlot), ]
+              myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+            } 
+            
+            p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
                          text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>sample type:",Type), 
                          color= ~Type,colors =c('Discards'='red','Landings'='lightgreen')) %>%  
-                layout(hovermode=TRUE, title=paste(input$species,"Length vs Weight (points coloured by sample type)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length), max(grspnew.w1()$Length)+1)),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05)),
+                layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by sample type)"),
+                       xaxis = list(title = 'Length (cm)', range= c(minX, maxX), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(minY, maxY), showline = TRUE),
+                       annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                        margin=(list(t=70)),
                        showlegend = TRUE)
             p$elementId <- NULL
             p 
         }else if(input$biooptionselection=="Gear"){
             grspnew.w1 <- filter(grspnew.w1(), !is.na(Gear))
-            p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
+            validate(need(nrow(grspnew.w1) > 0, "No data to plot for the selected parameters"))
+            # if there's a lot of data to plot just plot a sample of it
+            if (nrow(grspnew.w1)> maxPointsToPlot){
+              grspnew.w1 <- grspnew.w1[sample(nrow(grspnew.w1), maxPointsToPlot), ]
+              myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+            } 
+            
+            p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter', mode = 'markers',hoverinfo='text',
                          text=~paste("length:",Length,"cm","<br>weight:",Weight, "grams<br>date:", Date, "<br>gear type:",Gear),
                          color= ~Gear,colors = "Set1") %>%  
-                layout(hovermode=TRUE, title=paste(input$species,"Length vs Weight (points coloured by gear type)"),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length), max(grspnew.w1()$Length)+1)),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05)),
+                layout(hovermode='closest', title=paste(input$species,"Weight vs Length (points coloured by gear type)"),
+                       xaxis = list(title = 'Length (cm)', range= c(minX, maxX), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(minY, maxY), showline = TRUE),
+                       annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                        margin=(list(t=70)),
                        showlegend = TRUE)
             p$elementId <- NULL
             p 
         }
         else{
-            p <- plot_ly(grspnew.w1(), x = ~Length, y = ~Weight, type = 'scatter',color=~Weight, colors="Spectral",
-                         mode = 'markers', marker =list(opacity = 0.5), hoverinfo='text',
+          grspnew.w1 <- grspnew.w1()
+          validate(need(nrow(grspnew.w1()) > 0, "No data to plot for the selected parameters"))
+          # if there's a lot of data to plot just plot a sample of it
+          if (nrow(grspnew.w1)> maxPointsToPlot){
+            grspnew.w1 <- grspnew.w1[sample(nrow(grspnew.w1), maxPointsToPlot), ]
+            myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+          } 
+          
+           p <- plot_ly(grspnew.w1, x = ~Length, y = ~Weight, type = 'scatter',
+                         mode = 'markers', marker =list(opacity = 0.5,color='black'),
+                         hoverinfo='text',
                          text=~paste("length:",Length,"cm<br>weight:",Weight, "grams<br>Date:", Date)) %>%
-                layout(hovermode=TRUE, title=paste(input$species," Length vs Weight", sep=""),
-                       xaxis = list(title = 'Length (cm)', range= c(min(grspnew.w1()$Length), max(grspnew.w1()$Length)+1)),
-                       yaxis = list(title = 'Weight (g)', range = c(0, max(grspnew.w1()$Weight, na.rm = T)*1.05)),
-                       margin=(list(t=80)),
+                layout(hovermode='closest', 
+                       title=paste(input$species," Weight vs Length", sep=""),
+                       xaxis = list(title = 'Length (cm)', range= c(minX, maxX), showline = TRUE),
+                       yaxis = list(title = 'Weight (g)', range = c(minY, maxY), showline = TRUE),
+                       annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
+                       margin=(list(t=80)
+                      ),
                        showlegend = FALSE)
             p$elementId <- NULL
             p
@@ -381,16 +428,43 @@ grsp <-reactive({
     })   
     
 ######## Age/Weight ########
-    output$speciesotolith<-renderImage({
+output$speciesotolith<-renderImage({
+  # set a default file to avoid error messages
+  filename <- normalizePath(file.path('www/Ageing',paste('Black-bellied Anglerfish','.png', sep='')))
+  if(input$species != ""){
         filename <- normalizePath(file.path('www/Ageing',paste(input$species,'.png', sep='')))
-        list(src = filename, width =300)}, deleteFile = FALSE)
+  }
+  list(src = filename, width =300)
+  
+}, deleteFile = FALSE)
     
-cc.a<-reactive({filter(cc.age,Species==as.character(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]]))})  
+cc.a<-reactive({
+  
+  # set a default value to prevent error messages
+  speciesToFilter <- "xxx"
+  if (input$species != ""){
+    speciesToFilter <- as.character(SpeciesList[which(SpeciesList$Species_Name==input$species),][[2]])
+  }
+  
+  filter(cc.age,Species==speciesToFilter)
+  
+})  
 
 # Reactive year filter based on years available by species
 output$yearfilter.a<- renderUI({
-    sliderInput("year.a","Years", min=min(cc.a()$Year, na.rm=TRUE), max=max(cc.a()$Year, na.rm=TRUE), 
-                value =max(cc.a()$Year, na.rm=TRUE), sep="", step=1)
+  
+  # set default values to avoid errors
+  if (length(cc.a()$Year)> 0){
+    minYear <- min(cc.a()$Year, na.rm=TRUE)
+    maxYear <- max(cc.a()$Year, na.rm=TRUE)
+  } else {
+    minYear <- 2019
+    maxYear <- 2020
+  }
+  
+    sliderInput("year.a","Years", min=minYear, max=maxYear, 
+                value = c( maxYear-1, maxYear ),
+                sep="", step=1)
 })
 
 # Reactive quarter filter based on quarters available by species
@@ -409,7 +483,22 @@ output$GearFilter.a <- renderUI({
 
 
 grspage <- reactive({
-    grspageyear<- filter(cc.a(), Year %in% input$year.a)
+  
+    myYears <- c()
+    if (!is.null(input$year.a)){
+      if (length(input$year.a)>=2){
+        if (input$year.a[1] < input$year.a[2]){
+          myYears <- input$year.a[1]:input$year.a[2]
+        } else {
+          myYears <- c(input$year.a[1])
+        }
+      } else {
+        myYears <- input$year.a
+      }
+    }
+    
+    grspageyear<- filter(cc.a(), Year %in% myYears)
+    
     
     if(input$quarter.a == "All" || is.null(input$quarter.a)){
         grspageqtr = grspageyear
@@ -454,7 +543,7 @@ observe({
   if(input$Id.a=="ICES Area"){     
     if(is.null(input$year.a)){
          return()
-    }else{# ....
+    }else{
       
       x <- str_sort(as.character(unique(grspage()$ICESSubArea )),numeric = TRUE)
       updatePickerInput(session, "subselect.a",label="ICES Area", choices=x,selected = x)
@@ -463,7 +552,7 @@ observe({
   else{
     if(is.null(input$year.a)){
       return()
-    }else{# ....
+    }else{
       
       x <- str_sort(as.character(unique(grspage()$ICESDivFullNameN )),numeric = TRUE)
       updatePickerInput(session, "subselect2.a",label="ICES Division", choices=x,selected = x)
@@ -492,66 +581,125 @@ output$downloadDatala <- downloadHandler(
     })
 
 output$bio_la<- renderPlotly({
+  
+    validate(need(nrow(grspnew.a1()) > 0, "No data to plot for the selected parameters"))
+    # Max number of points we will plot on a chart - for performance reasons
+    maxPointsToPlot <- 10000 
+    myAnnotation <- ''
+    # Set ranges for axes
+    minX <- 0
+    maxX <- max(grspnew.a1()$Age)+1
+    minY <- min(grspnew.a1()$Length)-1
+    maxY <- max(grspnew.a1()$Length)+1
+
     if(input$ageoptionselection=="Sex"){
-        p <- plot_ly(grspnew.a1(), x = grspnew.a1()$AgeContin , y =grspnew.a1()$Length,
+      
+      grspnew.a1 <- filter(grspnew.a1(), !is.na(Sex))
+      validate(need(nrow(grspnew.a1) > 0, "No data to plot for the selected parameters"))
+      # if there's a lot of data to plot just plot a sample of it
+      if (nrow(grspnew.a1)> maxPointsToPlot){
+        grspnew.a1 <- grspnew.a1[sample(nrow(grspnew.a1), maxPointsToPlot), ]
+        myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+      } 
+      
+        p <- plot_ly(grspnew.a1, x = ~Age , y =~Length,
                      type = 'scatter', mode = 'markers',hoverinfo='text',
-                     text=~paste("length:",Length,"cm","<br>age:",AgeContin, "<br>date:", Date), 
+                     text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date, "<br>sex:", Sex), 
                      color = ~Sex, colors = "Set1",
                      mode = 'markers') %>% 
-            layout(hovermode=TRUE, title=paste(input$species,"age at length (points coloured by sex)"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$AgeContin)+1)),
-                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length), max(grspnew.a1()$Length)+1)),
+            layout(hovermode='closest', title=paste(input$species,"length at age (points coloured by sex)"),
+                   xaxis = list(title = 'Age', range= c(minX, maxX), showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(minY, maxY), showline = TRUE),
+                   annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                    margin=(list(t=50)),
                    showlegend = TRUE) 
         p$elementId <- NULL
         p 
     }else if(input$ageoptionselection=="Presentation"){
         grspnew.a1 <- filter(grspnew.a1(), !is.na(Presentation))
-        p <- plot_ly(grspnew.a1(), x = grspnew.a1()$AgeContin, y = grspnew.a1()$Length, 
+        validate(need(nrow(grspnew.a1) > 0, "No data to plot for the selected parameters"))
+        # if there's a lot of data to plot just plot a sample of it
+        if (nrow(grspnew.a1)> maxPointsToPlot){
+          grspnew.a1 <- grspnew.a1[sample(nrow(grspnew.a1), maxPointsToPlot), ]
+          myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+        } 
+        
+        p <- plot_ly(grspnew.a1, x = ~Age, y = ~Length, 
                      type = 'scatter', mode = 'markers',hoverinfo='text',
-                     text=~paste("length:",Length,"cm","<br>age:",AgeContin, "<br>date:", Date, "<br>presentation:", Presentation),
+                     text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date, "<br>presentation:", Presentation),
                      color= ~Presentation,colors = "Dark2") %>%  
-            layout(hovermode=TRUE, title=paste(input$species,"age at length (points coloured by presentation)"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$AgeContin)+1)),
-                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length), max(grspnew.a1()$Length)+1)),
+            layout(hovermode='closest',
+                   title=paste(input$species,"length at age (points coloured by presentation)"),
+                   xaxis = list(title = 'Age', range= c(minX, maxX), showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(minY, maxY), showline = TRUE),
+                   annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                    margin=(list(t=50)),
                    showlegend = TRUE) 
         p$elementId <- NULL
         p 
     }else if(input$ageoptionselection=="Sample Type"){
         grspnew.a1 <- filter(grspnew.a1(), !is.na(Type))
-        p <- plot_ly(grspnew.a1(), x = grspnew.a1()$AgeContin, y = grspnew.a1()$Length,
+        validate(need(nrow(grspnew.a1) > 0, "No data to plot for the selected parameters"))
+        # if there's a lot of data to plot just plot a sample of it
+        if (nrow(grspnew.a1)> maxPointsToPlot){
+          grspnew.a1 <- grspnew.a1[sample(nrow(grspnew.a1), maxPointsToPlot), ]
+          myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+        } 
+        
+        p <- plot_ly(grspnew.a1, x = ~Age, y = ~Length,
                      type = 'scatter', mode = 'markers',hoverinfo='text',
-                     text=~paste("length:",Length,"cm","<br>age:",AgeContin, "<br>date:", Date, "<br>sample type:",Type),
+                     text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date, "<br>sample type:",Type),
                      color= ~Type,colors =c('Discards'='red','Landings'='lightgreen')) %>%  
-            layout(hovermode=TRUE, title=paste(input$species,"age at length (points coloured by sample type)"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$AgeContin)+1)),
-                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length), max(grspnew.a1()$Length)+1)),
+            layout(hovermode='closest',
+                   title=paste(input$species,"length at age (points coloured by sample type)"),
+                   xaxis = list(title = 'Age', range= c(minX, maxX), showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(minY, maxY), showline = TRUE),
+                   annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                    margin=(list(t=50)),
                    showlegend = TRUE) 
         p$elementId <- NULL
         p 
     }else if(input$ageoptionselection=="Gear"){
         grspnew.a1 <- filter(grspnew.a1(), !is.na(Gear))
-        p <- plot_ly(grspnew.a1(), x = grspnew.a1()$AgeContin, y = grspnew.a1()$Length,
+        validate(need(nrow(grspnew.a1) > 0, "No data to plot for the selected parameters"))
+        # if there's a lot of data to plot just plot a sample of it
+        if (nrow(grspnew.a1)> maxPointsToPlot){
+          grspnew.a1 <- grspnew.a1[sample(nrow(grspnew.a1), maxPointsToPlot), ]
+          myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+        } 
+        
+        p <- plot_ly(grspnew.a1, x = ~Age, y = ~Length,
                      type = 'scatter', mode = 'markers',hoverinfo='text',
-                     text=~paste("length:",Length,"cm","<br>age:",AgeContin, "<br>date:", Date, "<br>gear type:",Gear),
+                     text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date, "<br>gear type:",Gear),
                      color= ~Gear,colors = "Set1") %>%  
-            layout(hovermode=TRUE, title=paste(input$species,"age at length (points coloured by gear type)"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$AgeContin)+1)),
-                   yaxis = list(title = 'Length (cm)', range= c(min(grspnew.a1()$Length), max(grspnew.a1()$Length)+1)),
+            layout(hovermode='closest',
+                   title=paste(input$species,"length at age (points coloured by gear type)"),
+                   xaxis = list(title = 'Age', range= c(minX, maxX), showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(minY, maxY), showline = TRUE),
+                   annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                    margin=(list(t=50)),
                    showlegend = TRUE) 
         p$elementId <- NULL
         p 
     }else{
-        p <- plot_ly(grspnew.a1(), x = grspnew.a1()$AgeContin, y = grspnew.a1()$Length,
-                     color= ~Age, colors = 'Paired',hoverinfo='text',
-                     type = 'scatter', mode = 'markers', marker =list(opacity = 0.5),
-                     text=~paste("length:",Length,"cm","<br>age:",AgeContin))%>% 
-            layout(hovermode=TRUE, title=paste(input$species,"age at length"),
-                   xaxis = list(title = 'Age', range= c(0, max(grspnew.a1()$AgeContin)+1)),
-                   yaxis = list(title = 'Length (cm)', range= c(0, max(grspnew.a1()$Length)+1)),
+      grspnew.a1 <- grspnew.a1()
+      validate(need(nrow(grspnew.a1) > 0, "No data to plot for the selected parameters"))
+      # if there's a lot of data to plot just plot a sample of it
+      if (nrow(grspnew.a1)> maxPointsToPlot){
+        grspnew.a1 <- grspnew.a1[sample(nrow(grspnew.a1), maxPointsToPlot), ]
+        myAnnotation <- paste0("Only ",maxPointsToPlot," points are plotted - full data available via 'Download data'")
+      } 
+      
+        p <- plot_ly(grspnew.a1, x = ~Age, y = ~Length,
+                     hoverinfo='text',
+                     type = 'scatter', mode = 'markers', marker =list(opacity = 0.5,color = 'black'),
+                     text=~paste("length:",Length,"cm","<br>age:",Age, "<br>date:", Date))%>% 
+                     #text=~paste("Age:",Age,"<br>Mean Length:",Length,"cm"))%>% 
+            layout(hovermode='closest',
+                   title=paste(input$species,"length at age"),
+                   xaxis = list(title = 'Age', range= c(minX, maxX) ,showline = TRUE),
+                   yaxis = list(title = 'Length (cm)', range= c(minY, maxY), showline = TRUE),
+                   annotations = list(text = myAnnotation,  x = (minX +maxX)/2, y = maxY * 0.99 ,showarrow=FALSE, font = list(size = 10)),
                    margin=(list(t=50)),
                    showlegend = FALSE)
         p$elementId <- NULL

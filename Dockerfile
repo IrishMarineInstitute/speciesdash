@@ -1,4 +1,5 @@
-FROM rocker/shiny:3.5.1
+FROM rocker/shiny:4.0.5
+#FROM rocker/shiny:3.5.1
 MAINTAINER Marine Institute
 # install ssl
 # and gdal
@@ -12,7 +13,7 @@ RUN Rscript -e "install.packages(c('shinyWidgets','shinythemes','shinycssloaders
 
 COPY www /srv/shiny-server/speciesdash/www
 COPY Data /srv/shiny-server/speciesdash/Data
-COPY R /srv/shiny-server/speciesdash/R
+#COPY R /srv/shiny-server/speciesdash/R
 COPY google-analytics.js /srv/shiny-server/speciesdash/
 COPY README.md /srv/shiny-server/speciesdash/
 COPY server.R /srv/shiny-server/speciesdash/
@@ -20,4 +21,4 @@ COPY ui.R /srv/shiny-server/speciesdash/
 
 
 EXPOSE 3838
-CMD ["/usr/bin/shiny-server.sh"]
+#CMD ["/usr/bin/shiny-server.sh"]
