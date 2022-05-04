@@ -3,7 +3,7 @@
   <p><b>Species Dashboard</b></p>
   <p>People can learn about fish species in Irish waters and explore their data with the Species Dashboard - this is a web application that makes biological fisheries data more available to all interested parties. In particular, it allows people to explore the length, weight, and age data of commercial species that are caught around Ireland and allows the effects of factors such as years, sex, area, and gear on the fish to be investigated.</p>
   <p>Below are the links to the source code for each of the phase 1 projects.  A Docker image can be created from the Dockerfile in the repo. </p>
-  <p><a href="https://github.com/IrishMarineInstitute/species-dashboard">Species Dashboard</a></p>
+  <p><a href="https://github.com/IrishMarineInstitute/speciesdash">Species Dashboard</a></p>
   <p><a href="https://github.com/IrishMarineInstitute/igfs-data-explorer">Irish Groundfish Survey</a></p>
   <p><a href="https://github.com/IrishMarineInstitute/digital-stockbook">Digital Stockbook</a></p>
   <p><a href="https://github.com/IrishMarineInstitute/cod-tagging">Cod Tagging</a></p>
