@@ -91,6 +91,7 @@ In order to assess the state of any fish stock, it is important to know the age 
                                                         tags$a(href = "https://www.dcmap-ireland.ie/", 
                                                                "Learn More", 
                                                                target="_blank"),
+                                                        br(),
                                                         img(src="Data.jpg", width =750, height= 250))
                                                
                                    )#close tabsetPanel     
