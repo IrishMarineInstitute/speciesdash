@@ -7,9 +7,9 @@
 #
 # Load in the data
 
-SpeciesList<-read.csv("Data/SpeciesList20211202.csv")
-bio.data <- readRDS("Data/bio.data20211202.rds")
-cc.age<- readRDS("Data/cc.age20211202.rds")
+SpeciesList<-read.csv("Data/SpeciesList20220512.csv")
+bio.data <- readRDS("Data/bio.data20220512.rds")
+cc.age<- readRDS("Data/cc.age20220512.rds")
 Supp_table <- read.csv('Data/Supplemental data.csv', header=TRUE, sep = ",")
 
 Mode <- function(x) {
@@ -169,8 +169,8 @@ grsp <-reactive({
         minYear <- min(grsp()$Year, na.rm=TRUE)
         maxYear <- max(grsp()$Year, na.rm=TRUE)
       } else {
-        minYear <- 2019
-        maxYear <- 2020
+        minYear <- 2020
+        maxYear <- 2021
       }
       
         sliderInput("year","Years", min=minYear, max=maxYear, 
@@ -458,8 +458,8 @@ output$yearfilter.a<- renderUI({
     minYear <- min(cc.a()$Year, na.rm=TRUE)
     maxYear <- max(cc.a()$Year, na.rm=TRUE)
   } else {
-    minYear <- 2019
-    maxYear <- 2020
+    minYear <- 2020
+    maxYear <- 2021
   }
   
     sliderInput("year.a","Years", min=minYear, max=maxYear, 

@@ -38,7 +38,10 @@ shinyUI(
                                                         HTML("<p>The fisheries resource is the bedrock of the Irish seafood industry. The waters around Ireland contain some of the most productive fishing grounds and biologically sensitive areas in the EU. In 2010 an estimated 1.3 million tonnes of fish were taken by the fishing fleets of EU member states from the waters around Ireland (ICES Sub-areas VI & VII). Ireland landed 259,500 tonnes of these fish or 23% of the international landings. The main fish species caught were mackerel, horse mackerel, boarfish, blue whiting, herring, cod, whiting, haddock, saithe, hake, megrim, anglerfish, plaice, sole and Nephrops.<br/> <p><b> Main map: </b>This map shows the main fishing grounds arounds Ireland. The names of the grounds are based on records from fisheries observers and the outlines are derived from VMS data. The colour of the background uses a gradient to give the impression of water dept with the darker the colour indicating the deeper the water. The character of the seabed can vary considerably from one area to the next and fishers distinguish fishing grounds based on the bottom type and on the expected catch composition. Marine Institute fisheries observers record the names used for these grounds and although the names may vary between fishers and some grounds have no clear boundaries, patterns emerge when the observer records are overlaid over fishing effort data from Vessel Monitoring Systems (VMS) and catch composition data from the logbooks.</br>"),
                                                         div(p(HTML(paste0('Funding for this project was provided by the EMFF ',br(),
                                                                           p(),
-                                                                          img(src="Logos/Irelands_EU_ESIF_2014_2020_en.jpg", width = "300px", height = "100px")))))),
+                                                                          img(src="Logos/Irelands_EU_ESIF_2014_2020_en.jpg", width = "300px", height = "100px"),
+                                                                          br(),br(),
+                                                                          div(p(HTML('App last updated 2022-05-12')))
+                                                                          ))))),
                                                tabPanel("Irish Ports", value = "B", 
                                                         p(), 
                                                         HTML("<p>Fish are landed into numerous ports around the Irish coast and, although each vessel is registered in a single port, they do not necessarily land their fish there. The main landings port for each vessel was determined by examining logbook data from  Irish Logbook Database and selecting the port where most landings events took place. Only vessels greater than 10m with at least 50 landings events during the period 2008-12 were included.</p>"),
@@ -217,8 +220,8 @@ In order to assess the state of any fish stock, it is important to know the age 
                                                                tags$style(HTML(".js-irs-0 .irs-grid-pol.small {height: 4px;}")),
                                                                tags$style(HTML(".js-irs-1 .irs-grid-pol.small {height: 0px;}")),
                                                                sliderInput("slideryear", "Choose Year:",
-                                                                           min = 2007, max = 2020, #change after yearly update..For year 2020 max year is 2019
-                                                                           value = 2020, step = 1,
+                                                                           min = 2007, max = 2021, #change after yearly update..For year 2020 max year is 2019
+                                                                           value = 2021, step = 1,
                                                                            sep = "",
                                                                            animate = TRUE),htmlOutput("LandingsDisttext")),offset=4,style = "margin-top:-5em"))
                             ), 
