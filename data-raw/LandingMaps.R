@@ -14,13 +14,13 @@ library(RODBC)
 ## TODO - change to latest logbooks snapshot and update VMSlogbooks.sql
 ## to use the correct year
 ## only need to extract the data once (takes a while):
-# channel <- odbcDriverConnect("Driver=SQL Server; Server=XXX; Database=XXX")
-#   sqlQuery(channel,readChar("data-raw/VmsLogbooks.sql",10^6))
-#   vms <- sqlQuery(channel,readChar("data-raw/RegularGrid.sql",10^6))
-# close(channel)
-# save(vms,file='data-raw/LandingsDistribution/LandingsEffort2020.Rdata')
+ # channel <- odbcDriverConnect("Driver=SQL Server; Server=xxx; Database=xxx")
+ #   sqlQuery(channel,readChar("data-raw/VmsLogbooks.sql",10^6))
+ #   vms <- sqlQuery(channel,readChar("data-raw/RegularGrid.sql",10^6))
+ # close(channel)
+ # save(vms,file='data-raw/LandingsDistribution/LandingsEffort2021.Rdata')
 
-load('data-raw/LandingsDistribution/LandingsEffort2020.Rdata')
+load('data-raw/LandingsDistribution/LandingsEffort2021.Rdata')
 
 eezWorld <- readOGR("data-raw","eez_boundaries") # marineregions v9
 eezWorld1 <- subset(eezWorld,Line_type%in%c('Treaty','200 NM','Connection line','Median line','Unilateral claim (undisputed)'))
