@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 data-raw/LandingsDistribution/
+data-raw/ConnectionDetails.R
