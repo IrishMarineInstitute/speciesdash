@@ -14,8 +14,14 @@ where ltrim(rtrim(Species)) in
 'Plaice','Pollack',
 'Saithe','Sole','Sprat','Whiting');"
 
-channel <- odbcDriverConnect("Driver=SQL Server; 
-                             Server=xxx; Database=xxx")
+# Load our server and database details (not included in Git)
+# This is the format of the ConnectionDetails.R file:
+# ConnectionDetails <- list(server = "serverName", database = "databaseName")
+source("data-raw/ConnectionDetails.R")
+conString <- paste0("Driver=SQL Server; Server=",ConnectionDetails[['server']],"; Database=",ConnectionDetails[['database']])
+
+# Connect to the database
+channel <- odbcDriverConnect(conString)
 SDdata<- sqlQuery(channel,Q1)
 
 # keep a back-up of original results before any changes are made layter
@@ -75,7 +81,7 @@ cc.length <- cc.length[cc.length$Weight>0,]
 
 bio.data<- cc.length
 bio.data.sample <- sample_frac(bio.data, 0.1)
-bio.data<-filter(bio.data,Year!=2022) #remove unverified data from present year
+bio.data<-filter(bio.data,Year!= as.integer(format(Sys.Date(), "%Y")) ) # remove unverified data from present year
 bio.data<-droplevels(filter(bio.data,ICESSubArea!="U    "))
 bio.data$ICESSubArea<-paste0("27.",bio.data$ICESSubArea)
 bio.data$ICESSubArea<-trimws(bio.data$ICESSubArea)
@@ -88,7 +94,7 @@ bio.data$ICESDivFullNameN<-droplevels(interaction(bio.data$ICESSubArea,bio.data$
 bio.data$ICESSubArea<-as.factor(bio.data$ICESSubArea)
 bio.data$ICESDivFullNameN<-as.factor(bio.data$ICESDivFullNameN)
 
-saveRDS(bio.data, file = "Data/bio.data20220512.rds") ##change to todays date before running
+saveRDS(bio.data, file = "Data/bio.data20241029.rds") ##change to todays date before running
 
 ### Age ###
 bio.data.age <- SDdata
@@ -103,7 +109,7 @@ cc.age <- cc.age %>%
 cc.age <- cc.age %>%
   mutate(AgeContin = cc.age$Age + cc.age$justdecimal)
 cc.age <- cc.age[!cc.age$Age <0.1,]
-cc.age<-filter(cc.age,Year!=2022)
+cc.age<-filter(cc.age,Year!= as.integer(format(Sys.Date(), "%Y")) ) # remove unverified data from present year
 cc.age<-droplevels(filter(cc.age,ICESSubArea!="U    "))
 cc.age$ICESSubArea<-paste0("27.",cc.age$ICESSubArea)
 cc.age$ICESSubArea<-trimws(cc.age$ICESSubArea)
@@ -117,7 +123,7 @@ cc.age$ICESDivFullNameN<-droplevels(interaction(cc.age$ICESSubArea,cc.age$ICESDi
 cc.age$ICESSubArea<-as.factor(cc.age$ICESSubArea)
 cc.age$ICESDivFullNameN<-as.factor(cc.age$ICESDivFullNameN)
 
-saveRDS(cc.age, file = "Data/cc.age20220512.rds")
+saveRDS(cc.age, file = "Data/cc.age20241029.rds")
 
 
 #########SpeciesList for server.R####
@@ -140,4 +146,4 @@ SpeciesList <- SpeciesList[SpeciesList$IC_Species %in%
 #                                            "Hake", "Black-bellied Anglerfish",
 #                                            "White-bellied Anglerfish","Horse Mackerel","Mackerel","Plaice",
 #                                           "Megrim","Sole","Boarfish"))
-write.csv(SpeciesList,"Data/SpeciesList20220512.csv",row.names=F)
+write.csv(SpeciesList,"Data/SpeciesList20241029.csv",row.names=F)

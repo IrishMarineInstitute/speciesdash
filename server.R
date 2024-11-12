@@ -7,9 +7,9 @@
 #
 # Load in the data
 
-SpeciesList<-read.csv("Data/SpeciesList20220512.csv")
-bio.data <- readRDS("Data/bio.data20220512.rds")
-cc.age<- readRDS("Data/cc.age20220512.rds")
+SpeciesList<-read.csv("Data/SpeciesList20241029.csv")
+bio.data <- readRDS("Data/bio.data20241029.rds")
+cc.age<- readRDS("Data/cc.age20241029.rds")
 Supp_table <- read.csv('Data/Supplemental data.csv', header=TRUE, sep = ",")
 
 Mode <- function(x) {

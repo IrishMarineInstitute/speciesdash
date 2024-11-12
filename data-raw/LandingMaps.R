@@ -8,21 +8,29 @@
 rm(list=ls())
 library(mapplots)
 library(mapdata)
-library(rgdal)
+#library(rgdal)
 library(RODBC)
+library(sf)
+
+# Load our server and database details (not included in Git)
+# This is the format of the ConnectionDetails.R file:
+# ConnectionDetails <- list(server = "serverName", database = "databaseName")
+source("data-raw/ConnectionDetails.R")
+conString <- paste0("Driver=SQL Server; Server=",ConnectionDetailsLB[['server']],"; Database=",ConnectionDetailsLB[['database']])
 
 ## TODO - change to latest logbooks snapshot and update VMSlogbooks.sql
 ## to use the correct year
 ## only need to extract the data once (takes a while):
- # channel <- odbcDriverConnect("Driver=SQL Server; Server=xxx; Database=xxx")
+ # channel <- odbcDriverConnect(conString)
  #   sqlQuery(channel,readChar("data-raw/VmsLogbooks.sql",10^6))
  #   vms <- sqlQuery(channel,readChar("data-raw/RegularGrid.sql",10^6))
  # close(channel)
- # save(vms,file='data-raw/LandingsDistribution/LandingsEffort2021.Rdata')
+ # save(vms,file='data-raw/LandingsDistribution/LandingsEffort2023.Rdata')
 
-load('data-raw/LandingsDistribution/LandingsEffort2021.Rdata')
+#load('data-raw/LandingsDistribution/LandingsEffort2023.Rdata')
 
-eezWorld <- readOGR("data-raw","eez_boundaries") # marineregions v9
+#eezWorld <- readOGR("data-raw","eez_boundaries") # marineregions v9
+eezWorld <- st_read("data-raw/eez_boundaries.shp")
 eezWorld1 <- subset(eezWorld,Line_type%in%c('Treaty','200 NM','Connection line','Median line','Unilateral claim (undisputed)'))
 rm(eezWorld)
 

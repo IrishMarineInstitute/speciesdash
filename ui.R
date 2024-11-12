@@ -40,7 +40,7 @@ shinyUI(
                                                                           p(),
                                                                           img(src="Logos/Irelands_EU_ESIF_2014_2020_en.jpg", width = "300px", height = "100px"),
                                                                           br(),br(),
-                                                                          div(p(HTML('App last updated 2022-05-12')))
+                                                                          div(p(HTML('App last updated 2024-11-12')))
                                                                           ))))),
                                                tabPanel("Irish Ports", value = "B", 
                                                         p(), 
@@ -221,8 +221,8 @@ In order to assess the state of any fish stock, it is important to know the age 
                                                                tags$style(HTML(".js-irs-0 .irs-grid-pol.small {height: 4px;}")),
                                                                tags$style(HTML(".js-irs-1 .irs-grid-pol.small {height: 0px;}")),
                                                                sliderInput("slideryear", "Choose Year:",
-                                                                           min = 2007, max = 2021, #change after yearly update..For year 2020 max year is 2019
-                                                                           value = 2021, step = 1,
+                                                                           min = 2007, max = 2023, #change after yearly update..For year 2020 max year is 2019
+                                                                           value = 2023, step = 1,
                                                                            sep = "",
                                                                            animate = TRUE),htmlOutput("LandingsDisttext")),offset=4,style = "margin-top:-5em"))
                             ), 
@@ -252,8 +252,8 @@ In order to assess the state of any fish stock, it is important to know the age 
                                                         p(),htmlOutput("fish_distribution"),
                                                         p(),htmlOutput("fish_b1a"),
                                                         h3("Useful links for more information:"),
-                                                        a(href=paste0("https://shiny.marine.ie/stockbook/"),
-                                                          "The Digital Stockbook",target="_blank"),
+                                                        a(href=paste0("https://oar.marine.ie/handle/10793/14"),
+                                                          "The Stockbook",target="_blank"),
                                                         p(),
                                                         a(href=paste0("https://www.marine.ie"),
                                                           "The Marine Institute webpage",target="_blank"),
