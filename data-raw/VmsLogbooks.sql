@@ -42,7 +42,7 @@ from Operational a
       on b.VesselID = c.VesselID
    join SpeciesLookup d
       on a.SpeciesID = d.SpeciesID
-where a.OperationDate between '1 jan 2021' and '1 jan 2022'
+where a.OperationDate between '1 jan 2023' and '1 jan 2024'
    and c.vesselprovenance = 'Ireland'
 group by convert(date,a.OperationDate)
    ,c.CFR
@@ -59,7 +59,7 @@ from FEAS_VMS..VMS_Position_Report a
       on a.prt_id = b.prt_id
    join FEAS_VMS..VMS_Gear c
       on a.prt_id = c.prt_id
-where a.date_time_logged between '1 jan 2021' and '1 jan 2022'
+where a.date_time_logged between '1 jan 2023' and '1 jan 2024'
    and a.posn_long between -20 and 7
    and a.posn_lat between 36 and 65
    and b.estimated_speed between 
