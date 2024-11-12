@@ -1,4 +1,4 @@
-FROM rocker/shiny:4.0.5
+FROM rocker/shiny:4.4.2
 #FROM rocker/shiny:3.5.1
 MAINTAINER Marine Institute
 # install ssl
@@ -8,8 +8,8 @@ RUN sudo apt-get update && apt-get install -y libssl-dev libudunits2-0 libudunit
 RUN Rscript -e "install.packages(c('htmlwidgets','dplyr','plotly','leaflet','mapview','tidyverse'), repos='https://cran.rstudio.com/')"
 ## fixing running as non root
 RUN sudo chown -R shiny:shiny /var/lib/shiny-server/
-RUN Rscript -e "install.packages(c('shinyWidgets','shinythemes','shinycssloaders','FSA','rgdal'), repos='https://cran.rstudio.com/')" && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
-
+# RUN Rscript -e "install.packages(c('shinyWidgets','shinythemes','shinycssloaders','FSA','rgdal'), repos='https://cran.rstudio.com/')" && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+RUN Rscript -e "install.packages(c('shinyWidgets','shinythemes','shinycssloaders','FSA'), repos='https://cran.rstudio.com/')" && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
 COPY www /srv/shiny-server/speciesdash/www
 COPY Data /srv/shiny-server/speciesdash/Data
