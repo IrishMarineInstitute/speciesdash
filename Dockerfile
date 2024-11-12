@@ -3,7 +3,7 @@ FROM rocker/shiny:4.4.2
 MAINTAINER Marine Institute
 # install ssl
 # and gdal
-RUN sudo apt-get update && apt-get install -y libssl-dev libudunits2-0 libudunits2-dev libproj-dev libgdal-dev && apt-get clean && rm -rf /var/lib/apt/lists/ && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+RUN sudo apt-get update && apt-get install -y libssl-dev libudunits2-0 libudunits2-dev libproj-dev libgdal-dev libharfbuzz-dev libfribidi-dev && apt-get clean && rm -rf /var/lib/apt/lists/ && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 # install additional packages
 RUN Rscript -e "install.packages(c('htmlwidgets','dplyr','plotly','leaflet','mapview','tidyverse'), repos='https://cran.rstudio.com/')"
 ## fixing running as non root
