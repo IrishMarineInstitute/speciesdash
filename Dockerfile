@@ -8,8 +8,7 @@ RUN Rscript -e "install.packages(c('htmlwidgets','dplyr','plotly','leaflet','map
 RUN sudo chown -R shiny:shiny /var/lib/shiny-server/
 # RUN Rscript -e "install.packages(c('shinyWidgets','shinythemes','shinycssloaders','FSA','rgdal'), repos='https://cran.rstudio.com/')" && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 RUN Rscript -e "install.packages(c('shinyWidgets','shinythemes','shinycssloaders','FSA'), repos='https://cran.rstudio.com/')" && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
-# Fix vulnerabilities. Exit with 0 if all high are resolved
-RUN  npm audit fix --audit-level=critical 
+
 
 # copy the app to the image
 COPY www /srv/shiny-server/speciesdash/www
