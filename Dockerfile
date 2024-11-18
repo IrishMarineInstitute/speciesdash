@@ -10,6 +10,10 @@ RUN sudo chown -R shiny:shiny /var/lib/shiny-server/
 RUN Rscript -e "install.packages(c('shinyWidgets','shinythemes','shinycssloaders','FSA'), repos='https://cran.rstudio.com/')" && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
 
+# remove the npm package as it's only a build dep
+rm -rf /opt/shiny-server/ext/node/lib/node_modules/npm  /opt/shiny-server/bin/npm
+
+
 # copy the app to the image
 COPY www /srv/shiny-server/speciesdash/www
 COPY Data /srv/shiny-server/speciesdash/Data
