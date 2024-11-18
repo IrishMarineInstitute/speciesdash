@@ -11,7 +11,7 @@ RUN Rscript -e "install.packages(c('shinyWidgets','shinythemes','shinycssloaders
 
 
 # remove the npm package as it's only a build dep
-rm -rf /opt/shiny-server/ext/node/lib/node_modules/npm  /opt/shiny-server/bin/npm
+RUN rm -rf /opt/shiny-server/ext/node/lib/node_modules/npm  /opt/shiny-server/bin/npm
 
 
 # copy the app to the image
