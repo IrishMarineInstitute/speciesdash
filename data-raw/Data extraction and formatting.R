@@ -12,7 +12,8 @@ where ltrim(rtrim(Species)) in
 'Cod','Haddock','Hake',
 'Horse Mackerel', 'Sole','Ling','Megrim','White-bellied Anglerfish',
 'Plaice','Pollack',
-'Saithe','Sole','Sprat','Whiting');"
+'Saithe','Sole','Sprat','Whiting')
+and [Year] < 2025;"
 
 # Load our server and database details (not included in Git)
 # This is the format of the ConnectionDetails.R file:
@@ -94,7 +95,7 @@ bio.data$ICESDivFullNameN<-droplevels(interaction(bio.data$ICESSubArea,bio.data$
 bio.data$ICESSubArea<-as.factor(bio.data$ICESSubArea)
 bio.data$ICESDivFullNameN<-as.factor(bio.data$ICESDivFullNameN)
 
-saveRDS(bio.data, file = "Data/bio.data20241029.rds") ##change to todays date before running
+saveRDS(bio.data, file = "Data/bio.data20260413.rds") ##change to todays date before running
 
 ### Age ###
 bio.data.age <- SDdata
@@ -123,7 +124,7 @@ cc.age$ICESDivFullNameN<-droplevels(interaction(cc.age$ICESSubArea,cc.age$ICESDi
 cc.age$ICESSubArea<-as.factor(cc.age$ICESSubArea)
 cc.age$ICESDivFullNameN<-as.factor(cc.age$ICESDivFullNameN)
 
-saveRDS(cc.age, file = "Data/cc.age20241029.rds")
+saveRDS(cc.age, file = "Data/cc.age20260413.rds")
 
 
 #########SpeciesList for server.R####
@@ -146,4 +147,4 @@ SpeciesList <- SpeciesList[SpeciesList$IC_Species %in%
 #                                            "Hake", "Black-bellied Anglerfish",
 #                                            "White-bellied Anglerfish","Horse Mackerel","Mackerel","Plaice",
 #                                           "Megrim","Sole","Boarfish"))
-write.csv(SpeciesList,"Data/SpeciesList20241029.csv",row.names=F)
+write.csv(SpeciesList,"Data/SpeciesList20260413.csv",row.names=F)

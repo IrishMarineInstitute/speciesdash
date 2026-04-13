@@ -21,11 +21,11 @@ conString <- paste0("Driver=SQL Server; Server=",ConnectionDetailsLB[['server']]
 ## TODO - change to latest logbooks snapshot and update VMSlogbooks.sql
 ## to use the correct year
 ## only need to extract the data once (takes a while):
- # channel <- odbcDriverConnect(conString)
- #   sqlQuery(channel,readChar("data-raw/VmsLogbooks.sql",10^6))
- #   vms <- sqlQuery(channel,readChar("data-raw/RegularGrid.sql",10^6))
- # close(channel)
- # save(vms,file='data-raw/LandingsDistribution/LandingsEffort2023.Rdata')
+# channel <- odbcDriverConnect(conString)
+#   sqlQuery(channel,readChar("data-raw/VmsLogbooks.sql",10^6))
+#   vms <- sqlQuery(channel,readChar("data-raw/RegularGrid.sql",10^6))
+# close(channel)
+# save(vms,file='data-raw/LandingsDistribution/LandingsEffort2024.Rdata')
 
 #load('data-raw/LandingsDistribution/LandingsEffort2023.Rdata')
 
