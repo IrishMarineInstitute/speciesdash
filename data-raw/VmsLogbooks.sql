@@ -42,35 +42,37 @@ from Operational a
       on b.VesselID = c.VesselID
    join SpeciesLookup d
       on a.SpeciesID = d.SpeciesID
-where a.OperationDate between '1 jan 2023' and '1 jan 2024'
+where a.OperationDate between '1 jan 2024' and '1 jan 2025'
    and c.vesselprovenance = 'Ireland'
 group by convert(date,a.OperationDate)
    ,c.CFR
 
 select b.cfr
    ,b.date_logged
-   ,coalesce(LogbookMainGear,EuMainGear) as best_gear
+   --,coalesce(LogbookMainGear,EuMainGear) as best_gear
+   ,coalesce(gear_logbook,gear_eu_main) as best_gear
    ,a.posn_long as lon
    ,a.posn_lat as lat
    ,case when b.dt > 4 then 4 else b.dT end as dT
 into #vms
 from FEAS_VMS..VMS_Position_Report a
-   join FEAS_VMS..VMS_Calculated_Fields b
+   join FEAS_VMS..VMS_Auxiliary b
       on a.prt_id = b.prt_id
-   join FEAS_VMS..VMS_Gear c
-      on a.prt_id = c.prt_id
-where a.date_time_logged between '1 jan 2023' and '1 jan 2024'
+   --join FEAS_VMS..VMS_Gear c
+    --  on a.prt_id = c.prt_id
+where a.date_time_logged between '1 jan 2024' and '1 jan 2025'
    and a.posn_long between -20 and 7
    and a.posn_lat between 36 and 65
    and b.estimated_speed between 
-         case when substring(coalesce(LogbookMainGear,EuMainGear),1,3) in ('FPO','GEN','GN','GNC','GND','GNF','GNS','GTN','GTR','LHM','LHP','LLD','LLS','LTL','LX') then 0.1 
+         case when substring(coalesce(gear_logbook,gear_eu_main),1,3) in ('FPO','GEN','GN','GNC','GND','GNF','GNS','GTN','GTR','LHM','LHP','LLD','LLS','LTL','LX') then 0.1 
          else 0.5 end  
-      and case when substring(coalesce(LogbookMainGear,EuMainGear),1,3) in ('DRB','DRH','HMD','OTB','OTT','PTB') then 5.5
-         when substring(coalesce(LogbookMainGear,EuMainGear),1,3) in ('OTM','PTM','TM','LNB','LLS','TBB') then 6
+      and case when substring(coalesce(gear_logbook,gear_eu_main),1,3) in ('DRB','DRH','HMD','OTB','OTT','PTB') then 5.5
+         when substring(coalesce(gear_logbook,gear_eu_main),1,3) in ('OTM','PTM','TM','LNB','LLS','TBB') then 6
          else 4.5
          end
    and b.dt > 0
-   and c.LogbookMainGear is not null
+   --and c.LogbookMainGear is not null
+   and b.gear_logbook is not null
 
 select cfr
    ,date_logged
